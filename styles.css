@@ -1,0 +1,15 @@
+/* ------------------------------------------------- */
+/* JEROME: ADDING Story 1: Homepage and Login */
+h1 
+{
+  color: burlywood;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-size: 200px;
+}
+
+body 
+{
+  background-image: url("HOMEPAGE.png");
+}
+
+/* ------------------------------------------------- */
