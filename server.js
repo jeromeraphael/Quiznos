@@ -30,6 +30,20 @@ app.get('/users', (req, res) => {
   }); 
 }); 
 
+app.post('/create-account', (req, res) => {
+  let username = req.body.username; 
+  let password = req.body.password; 
+  let sql = `INSERT INTO users (username, password) VALUES (?, ?)`
+  con.query(sql, [username, password], (err, results) => {
+    if (err) throw err; 
+  }); 
+  let querySql = `SELECT * FROM users WHERE username = ? AND password = ?` 
+  con.query(querySql, [username, password], (err, results) => {
+    console.log(results); 
+  });
+  console.log(req.body); 
+});
+
 app.get('/validate-login', (req, res) => {
   let sql = `SELECT * FROM users WHERE username = ? AND password = ?`
   // req.query contains the url parameters that are sent from the form being submitted
