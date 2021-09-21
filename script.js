@@ -21,7 +21,6 @@ eventEmitter.on("processingFinished", processingFinishedHandler);
 httpServer = http.createServer(processServerRequest);
 httpServer.listen(3306);
 
-
 function processServerRequest(request, response){
     console.log(`Processing: ${request.url}`);
 
@@ -69,10 +68,10 @@ function processingFinishedHandler(){
     res.end();
 }
 
-
-
-
 function testAnswer1(button){
+    function isNumeric(num){
+        return !isNaN(num)
+      } 
 
     switch (button){
         case '1':
@@ -82,17 +81,45 @@ function testAnswer1(button){
 
             break;
         case '2':
-            alert("Oof that ain't right chief");
+            if (isNumeric(document.getElementById('c1').textContent) == true)
+            {
+               let x = document.getElementById('c1').textContent;
+               let rounded = Math.round(x * 100)/100;
+               alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+            }
+            else
+            {
+                alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c1').textContent);
+            }
+            
             answered++;
             document.getElementById('do1').style.backgroundColor = 'Red';
             break;
         case '3':
-            alert("Oof that ain't right chief");
+            if (isNumeric(document.getElementById('c1').textContent) == true)
+            {
+               let x = document.getElementById('c1').textContent;
+               let rounded = Math.round(x * 100)/100;
+               alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+            }
+            else
+            {
+                alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c1').textContent);
+            }
             answered++;
             document.getElementById('do2').style.backgroundColor = 'Red';
             break;
         case '4':
-            alert("Oof that ain't right chief");
+            if (isNumeric(document.getElementById('c1').textContent) == true)
+            {
+               let x = document.getElementById('c1').textContent;
+               let rounded = Math.round(x * 100)/100;
+               alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+            }
+            else
+            {
+                alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c1').textContent);
+            }
             answered++;
             document.getElementById('do3').style.backgroundColor = 'Red';
             break;
@@ -111,30 +138,62 @@ function testAnswer1(button){
 }
 
 function testAnswer2(button){
+    function isNumeric(num){
+        return !isNaN(num)
+    } 
 
-    switch (button){
-        case '1':
-            alert('Damn you got it right bro');
-            correct++;
-            answered++;
+switch (button){
+    case '1':
+        alert('Damn you got it right bro');
+        correct++;
+        answered++;
 
-            break;
-        case '2':
-            alert("Oof that ain't right chief");
-            answered++;
-            document.getElementById('dt1').style.backgroundColor = 'Red';
-            break;
-        case '3':
-            alert("Oof that ain't right chief");
-            answered++;
-            document.getElementById('dt2').style.backgroundColor = 'Red';
-            break;
-        case '4':
-            alert("Oof that ain't right chief");
-            answered++;
-            document.getElementById('dt3').style.backgroundColor = 'Red';
-            break;
+        break;
+    case '2':
+        if (isNumeric(document.getElementById('c2').textContent) == true)
+        {
+           let x = document.getElementById('c2').textContent;
+           let rounded = Math.round(x * 100)/100;
+           alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
         }
+        else
+        {
+            alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c2').textContent);
+        }
+        
+        answered++;
+        document.getElementById('dt1').style.backgroundColor = 'Red';
+        break;
+    case '3':
+        if (isNumeric(document.getElementById('c2').textContent) == true)
+        {
+           let x = document.getElementById('c2').textContent;
+           let rounded = Math.round(x * 100)/100;
+           alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+        }
+        else
+        {
+            alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c2').textContent);
+        }
+        answered++;
+        document.getElementById('dt2').style.backgroundColor = 'Red';
+        break;
+    case '4':
+        if (isNumeric(document.getElementById('c2').textContent) == true)
+        {
+           let x = document.getElementById('c2').textContent;
+           let rounded = Math.round(x * 100)/100;
+           alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+        }
+        else
+        {
+            alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c2').textContent);
+        }
+
+        answered++;
+        document.getElementById('dt3').style.backgroundColor = 'Red';
+        break;
+    }
 
         var x = document.getElementsByClassName("q2button");
         for (var i = 0; i < x.length; i++){
@@ -149,6 +208,9 @@ function testAnswer2(button){
 }
 
 function testAnswer3(button){
+    function isNumeric(num){
+        return !isNaN(num)
+    } 
 
     switch (button){
         case '1':
@@ -158,17 +220,47 @@ function testAnswer3(button){
 
             break;
         case '2':
-            alert("Oof that ain't right chief");
+            if (isNumeric(document.getElementById('c3').textContent) == true)
+            {
+               let x = document.getElementById('c3').textContent;
+               let rounded = Math.round(x * 100)/100;
+               alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+            }
+            else
+            {
+                alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c3').textContent);
+            }
+
             answered++;
             document.getElementById('dth1').style.backgroundColor = 'Red';
             break;
         case '3':
-            alert("Oof that ain't right chief");
+            if (isNumeric(document.getElementById('c3').textContent) == true)
+            {
+               let x = document.getElementById('c3').textContent;
+               let rounded = Math.round(x * 100)/100;
+               alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+            }
+            else
+            {
+                alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c3').textContent);
+            }
+            
             answered++;
             document.getElementById('dth2').style.backgroundColor = 'Red';
             break;
         case '4':
-            alert("Oof that ain't right chief");
+            if (isNumeric(document.getElementById('c3').textContent) == true)
+            {
+               let x = document.getElementById('c3').textContent;
+               let rounded = Math.round(x * 100)/100;
+               alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+            }
+            else
+            {
+                alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c3').textContent);
+            }
+            
             answered++;
             document.getElementById('dth3').style.backgroundColor = 'Red';
             break;
@@ -187,6 +279,9 @@ function testAnswer3(button){
 }
 
 function testAnswer4(button){
+    function isNumeric(num){
+        return !isNaN(num)
+    } 
 
     switch (button){
         case '1':
@@ -196,17 +291,47 @@ function testAnswer4(button){
 
             break;
         case '2':
-            alert("Oof that ain't right chief");
+            if (isNumeric(document.getElementById('c4').textContent) == true)
+            {
+               let x = document.getElementById('c4').textContent;
+               let rounded = Math.round(x * 100)/100;
+               alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+            }
+            else
+            {
+                alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c4').textContent);
+            }
+            
             answered++;
             document.getElementById('df1').style.backgroundColor = 'Red';
             break;
         case '3':
-            alert("Oof that ain't right chief");
+            if (isNumeric(document.getElementById('c4').textContent) == true)
+            {
+               let x = document.getElementById('c4').textContent;
+               let rounded = Math.round(x * 100)/100;
+               alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+            }
+            else
+            {
+                alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c4').textContent);
+            }
+            
             answered++;
             document.getElementById('df2').style.backgroundColor = 'Red';
             break;
         case '4':
-            alert("Oof that ain't right chief");
+            if (isNumeric(document.getElementById('c4').textContent) == true)
+            {
+               let x = document.getElementById('c4').textContent;
+               let rounded = Math.round(x * 100)/100;
+               alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+            }
+            else
+            {
+                alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c4').textContent);
+            }
+            
             answered++;
             document.getElementById('df3').style.backgroundColor = 'Red';
             break;
@@ -225,6 +350,9 @@ function testAnswer4(button){
 }
 
 function testAnswer5(button){
+    function isNumeric(num){
+        return !isNaN(num)
+    } 
 
     switch (button){
         case '1':
@@ -234,17 +362,47 @@ function testAnswer5(button){
 
             break;
         case '2':
-            alert("Oof that ain't right chief");
+            if (isNumeric(document.getElementById('c5').textContent) == true)
+            {
+               let x = document.getElementById('c5').textContent;
+               let rounded = Math.round(x * 100)/100;
+               alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+            }
+            else
+            {
+                alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c5').textContent);
+            }
+            
             answered++;
             document.getElementById('dfi1').style.backgroundColor = 'Red';
             break;
         case '3':
-            alert("Oof that ain't right chief");
+            if (isNumeric(document.getElementById('c5').textContent) == true)
+            {
+               let x = document.getElementById('c5').textContent;
+               let rounded = Math.round(x * 100)/100;
+               alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+            }
+            else
+            {
+                alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c5').textContent);
+            }
+            
             answered++;
             document.getElementById('dfi2').style.backgroundColor = 'Red';
             break;
         case '4':
-            alert("Oof that ain't right chief");
+            if (isNumeric(document.getElementById('c5').textContent) == true)
+            {
+               let x = document.getElementById('c5').textContent;
+               let rounded = Math.round(x * 100)/100;
+               alert("Oof that ain't right chief. Correct answer is: " + " Rounded: " + rounded + " (" + x + ")");
+            }
+            else
+            {
+                alert("Oof that ain't right chief. Correct answer is: " + document.getElementById('c5').textContent);
+            }
+            
             answered++;
             document.getElementById('dfi3').style.backgroundColor = 'Red';
             break;
@@ -266,6 +424,6 @@ function result(){
     if (answered == 5){
         let score = correct/answered;
 
-        alert('You scored ' + score*100 + '%');
+        alert('BRO! You scored ' + score*100 + '%');
     }
-}
+}a
