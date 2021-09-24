@@ -3,7 +3,7 @@ const http = require('http');
 const express = require('express'); 
 const app = express(); 
 const httpServer = require('http').createServer(app); 
-var mysql = require('mysql'); 
+const mysql = require('mysql'); 
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true})); 
@@ -31,12 +31,14 @@ app.get('/users', (req, res) => {
 }); 
 
 app.post('/create-account', (req, res) => {
-  let username = req.body.username; 
-  let password = req.body.password; 
+  // inserting data into the database with create-account
+  // post requests have a body that can be accessed through req.body
   let sql = `INSERT INTO users (username, password) VALUES (?, ?)`
-  con.query(sql, [username, password], (err, results) => {
+  con.query(sql, [req.body.username, req.body.password], (err, results) => {
     if (err) throw err; 
   }); 
+  // querying the new information that has been just added and logging it
+  // to the console so we can know what we are seeing
   let querySql = `SELECT * FROM users WHERE username = ? AND password = ?` 
   con.query(querySql, [username, password], (err, results) => {
     console.log(results); 
@@ -44,19 +46,32 @@ app.post('/create-account', (req, res) => {
   console.log(req.body); 
 });
 
-app.get('/validate-login', (req, res) => {
+app.post('/validate-login', (req, res) => {
+  // we are going to be sending a json back to the page, so we have to make sure
+  // to set the content type so it sends correctly
+  res.contentType('application/json'); 
+  
   let sql = `SELECT * FROM users WHERE username = ? AND password = ?`
-  // req.query contains the url parameters that are sent from the form being submitted
-  con.query(sql, [req.query.username, req.query.password], (err, results) => {
-    if (results.length === 0) {
-      res.send('<h1> login attempt failed </h1>'); 
+  
+  con.query(sql, [req.body.username, req.body.password], (err, results) => {
+    if (err !== null || err !== []) {
+      console.log(err); 
     }
-    else {
-      res.send("<h1> login attempt successful! </h1>"); 
+    try {
+      // if there are any results, the user exists in the database, so we reuse
+      if (results.length === 0) {
+        console.log(results); 
+        res.json({loginValid: false}); 
+      }
+      else {
+        res.send({loginValid: true}); 
+      }
+    } 
+    catch {
+      console.log('error with /validate-login'); 
     }
   });
 });
-
 
 // Host: 107.180.1.16
 // Port: 3306
