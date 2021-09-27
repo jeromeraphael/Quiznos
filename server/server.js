@@ -35,15 +35,17 @@ app.post('/create-account', (req, res) => {
   // post requests have a body that can be accessed through req.body
   let sql = `INSERT INTO users (username, password) VALUES (?, ?)`
   con.query(sql, [req.body.username, req.body.password], (err, results) => {
-    if (err) throw err; 
+    if (err) {
+      res.send({accountCreated: false, error: err}); 
+    }
+    else res.send({accountCreated: true});  
   }); 
   // querying the new information that has been just added and logging it
   // to the console so we can know what we are seeing
-  let querySql = `SELECT * FROM users WHERE username = ? AND password = ?` 
-  con.query(querySql, [username, password], (err, results) => {
-    console.log(results); 
-  });
-  console.log(req.body); 
+  // let querySql = `SELECT * FROM users WHERE username = ? AND password = ?` 
+  // con.query(querySql, [username, password], (err, results) => {
+  //   console.log(results); 
+  // });
 });
 
 app.post('/validate-login', (req, res) => {
@@ -54,8 +56,8 @@ app.post('/validate-login', (req, res) => {
   let sql = `SELECT * FROM users WHERE username = ? AND password = ?`
   
   con.query(sql, [req.body.username, req.body.password], (err, results) => {
-    if (err !== null || err !== []) {
-      console.log(err); 
+    if (String(err).length > 0 && err !== null) {
+      console.log(`error: ${err}`); 
     }
     try {
       // if there are any results, the user exists in the database, so we reuse
@@ -72,6 +74,10 @@ app.post('/validate-login', (req, res) => {
     }
   });
 });
+
+app.get('/play', (req, res) => {
+
+}); 
 
 // Host: 107.180.1.16
 // Port: 3306

@@ -10,9 +10,9 @@
     <h1>Login Below</h1>
     <form onsubmit="return false">
         <label for="username">username: </label>
-        <input name="username" type="text" id="username">
+        <input name="username" type="text" id="login-username">
         <label for="password">password: </label>
-        <input name="password" type="text" id="password">
+        <input name="password" type="text" id="login-password">
         <input type="submit" id="submit" value="submit" onclick="validateLogin()">
     </form>
     <br>
@@ -23,10 +23,10 @@
     <h1>If you don't have an account, create one below </h1>
     <form id="create-account" method="POST">
         <label for="username">username: </label>
-        <input name="username" type="text>
+        <input id="create-username" name="username" type="text>
         <label for="password">password: </label>
-        <input name="password" type="text>
-        <input type="submit" onclick="validateLogin()" id="submit-create-account" value="submit">
+        <input id="create-password" name="password" type="text">
+        <input type="submit" onclick="addAccount()" id="submit-create-account" value="submit">
     </form>
     <script>
         "use strict"; 
@@ -34,13 +34,14 @@
         createAccount.style.display = 'none'; 
         let loginFailed = document.getElementById('login-failed');
         loginFailed.style.display = 'none'; 
+        
         const showCreateAccount = () => {
             document.getElementById("create-account").style.display = 'block'; 
         }
 
-        async function validateLogin() {
-            let username = document.getElementById('username').value; 
-            let password = document.getElementById('password').value; 
+        const validateLogin = async () =>  {
+            let username = document.getElementById('login-username').value; 
+            let password = document.getElementById('login-password').value; 
             let response = await fetch('/validate-login', {
                 method: "POST", 
                 credentials: "same-origin", 
@@ -52,6 +53,7 @@
             let json = await response.json()
             if (json['loginValid'] === true ) {
                 localStorage.setItem('username', username);
+                window.location.href = "localhost:4545/play"
             }
             else wrongLoginPrompt(json); 
             console.log(JSON.stringify(json)); 
@@ -60,6 +62,19 @@
 
         const wrongLoginPrompt = (response) => { 
             loginFailed.style.display = ''; 
+        }
+
+        const addAccount = async () => {
+            let newUsername = document.getElementById('create-password').value; 
+            let newPassword = document.getElementById('create-passwor').value; 
+            let response = await fetch('/create-account', {
+                method: "POST", 
+                credentials: "same-origin", 
+                headers: {
+                    'Content-Type': 'application/json' 
+                }, 
+                body: JSON.stringify({'username': newUsername, 'password': newPassword})
+            });
         }
 
     </script>
