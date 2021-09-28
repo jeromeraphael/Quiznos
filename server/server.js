@@ -9,15 +9,17 @@ const path = require('path');
 app.use(express.json());
 app.use(express.urlencoded({extended: true})); 
 
-const getQuestionJson = (results) => {
-    let jsonResult = {questions: [{questionText: results['questionText'], 
-                           answer1: results['answer1'],
-                           answer2: results['answer2'],
-                           answer3: results['answer3'], 
-                           answer4: results['answer4'],
-                           correctAnswer: results['correctAnswer']}]
-                          }
-    return jsonResult;  
+const getQuestionsFromDb = (questionNumber, con) => {
+  let sql = `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
+              FROM questions
+              WHERE quizId = ${String(questionNumber)}
+              ORDER BY RAND()
+              LIMIT 5;`;
+  console.log(sql)
+  con.query(sql, [], (err, results) => {
+    return results;   
+  }); 
+
 }
 
 var con = mysql.createConnection({
@@ -94,27 +96,53 @@ app.post('/validate-login', (req, res) => {
   });
 });
 
-app.get('/science', (req, res) => {
-
-  let sql = `SELECT * FROM questions `
-
-
+app.get('/science/questions', (req, res) => {
+  let sql = `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
+                FROM questions
+                WHERE quizId = 2
+                ORDER BY RAND()
+                LIMIT 5;`;
+  con.query(sql, (err, results) => {
+    if (err) throw err; 
+    res.json(results); 
+  });
 }); 
 
-app.get('/math', (req, res) => {
-
+app.get('/math/questions', (req, res) => {
+  let sql = `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
+                FROM questions
+                WHERE quizId = 3
+                ORDER BY RAND()
+                LIMIT 5;`;
+  con.query(sql, (err, results) => {
+    if (err) throw err; 
+    res.json(results); 
+  });
 }); 
 
-app.get('/general', (req, res) => {
-  let sql = `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer
-             FROM questions
-             WHERE quizId = 1
-             ORDER BY RAND()
-             LIMIT 5;`;
-  con.query(sql, [], (err, results) => {
-    if (err) throw (err); 
-    res.json(getQuestionJson(results)); 
-  }); 
+app.get('/general/questions', (req, res) => {
+  let sql = `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
+                FROM questions
+                WHERE quizId = 1
+                ORDER BY RAND()
+                LIMIT 5;`;
+  con.query(sql, (err, results) => {
+    if (err) throw err; 
+    res.json(results); 
+  });  
+}); 
+
+app.get('/questions', (req, res) => {
+  let questionNumber = 1; 
+  let sql = `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
+              FROM questions
+              WHERE quizId = ${String(questionNumber)}
+              ORDER BY RAND()
+              LIMIT 5;`;
+  con.query(sql, (err, results) => {
+    console.log(results); 
+    res.json(results); 
+  });
 }); 
 
 // Host: 107.180.1.16
