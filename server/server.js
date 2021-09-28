@@ -9,6 +9,7 @@ const path = require('path');
 app.use(express.json());
 app.use(express.urlencoded({extended: true})); 
 
+// returns the sql for the queries that generate the questions
 const getQuestionSQL = (quizId) => {
   return `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
   FROM questions
@@ -17,6 +18,8 @@ const getQuestionSQL = (quizId) => {
   LIMIT 5;`;
 }
 
+// users the mysql connection object, sql statement string, and response object from express
+// to send a json of the results of a mysql query 
 const sendQuestionJSON = (con, sql, res) => {
   con.query(sql, (err, results) => {
     if (err) throw err; 
@@ -111,7 +114,6 @@ app.get('/general/questions', (req, res) => {
 }); 
 
 app.get('/questions', (req, res) => {
-  let questionNumber = 1; 
   let sql = `SELECT * FROM questions;`
   con.query(sql, (err, results) => {
     console.log(results); 
