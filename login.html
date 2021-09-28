@@ -5,15 +5,112 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        *{
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+        #login-failed {
+            color: red; 
+        }
+        .center{
+            text-align: center;
+        }
+
+    </style>
 </head>
-<body>
-    <form action="/validate-login" method="GET">
-        <label for="username">username: </label>
-        <input name="username" type="text" id="username">
-        <label for="password">password: </label>
-        <input name="password" type="text" id="password">
-        <input type="submit" id="submit" value="submit">
+
+<body class="center">
+    <h1 style="font-family: wingdings; font-size: 50px;">QUIZKNOWS</h1>
+    <h3>That's Quizknows in Wingdings</h3>
+
+    <form onsubmit="return false">
+        <label for="username"></label>
+        <input name="username" type="text" id="login-username"  placeholder="USERNAME" required>
+        <br></br>
+
+        <label for="password"></label>
+        <input name="password" type="text" id="login-password" placeholder="PASSWORD" required>
+        <br><br>
+
+        <input type="submit" id="submit" value="Log In" onclick="validateLogin()">
     </form>
 
+    <hr>
+    <p>New to Quizknows?</p>
+
+    <p id="login-failed">Login attempt failed</p>
+    <br>
+    <button id='create-new-account-display' onclick="showCreateAccount()">Create a new account</button>
+    <br>
+    <br>
+
+    <form id="create-account" onsubmit="return false">
+        <label for="username">username: </label>
+        <input id="create-username" name="username" type="text">
+        <label for="password">password: </label>
+        <input id="create-password" name="password" type="text">
+        <input type="submit" onclick="addAccount()" id="submit-create-account" value="submit">
+    </form>
+
+    <script>
+        "use strict"; 
+        let createAccount = document.getElementById("create-account");
+        createAccount.style.display = 'none'; 
+        let loginFailed = document.getElementById('login-failed');
+        loginFailed.style.display = 'none'; 
+        
+        const showCreateAccount = () => {
+            document.getElementById("create-account").style.display = 'block'; 
+        }
+
+        const validateLogin = async () =>  {
+            let username = document.getElementById('login-username').value; 
+            let password = document.getElementById('login-password').value; 
+            let response = await fetch('/validate-login', {
+                method: "POST", 
+                credentials: "same-origin", 
+                headers: {
+                    'Content-Type': 'application/json' 
+                }, 
+                body: JSON.stringify({'username': username, 'password': password})
+            });
+            
+            try {
+                let json = await response.json()
+                if (json['loginValid'] === true ) {
+                    localStorage.setItem('username', username);
+                    window.location.href = "http://localhost:4545/play"
+                }
+                else wrongLoginPrompt(json); 
+                console.log(JSON.stringify(json)); 
+            }
+            catch (e) {
+                console.log(e); 
+                console.locg('going to index.html'); 
+            }
+        }
+
+        const wrongLoginPrompt = (response) => { 
+            loginFailed.style.display = ''; 
+        }
+
+        const addAccount = async () => {
+            let newUsername = document.getElementById('create-username').value; 
+            let newPassword = document.getElementById('create-password').value; 
+            let response = await fetch('/create-account', {
+                method: "POST", 
+                credentials: "same-origin", 
+                headers: {
+                    'Content-Type': 'application/json' 
+                }, 
+                body: JSON.stringify({'username': newUsername, 'password': newPassword})
+            });
+            let accountSuccess = await response.json(); 
+            if (accountSuccess['accountCreated']) {
+                alert('Gnarly, bro! You have successfully created your QUIZKNOWS account. Use these credentials on your next log in.'); 
+            }
+        }
+
+    </script>
 </body>
 </html>

@@ -4,7 +4,26 @@
     <meta http-equiv="content-type" content="text/html;charset=utf-8" />
     <title>The Quiz That No One Asked For</title>
 
-    <link rel="stylesheet" href="styles.css" />
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
+    <style>
+      h1 {
+        color: burlywood;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+          sans-serif;
+        font-size: 200px;
+      }
+
+      #categories {
+        color: burlywood;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+          sans-serif;
+        font-size: 75px;
+      }
+
+      body {
+        background-image: url("HOMEPAGE.png");
+      }
+    </style>
   </head>
 
   <body>
@@ -15,14 +34,34 @@
           <center>
             <table>
               <tr>
-                <td><a href="general.html">GENERAL</a></td>
-                <td><a href="math.html">MATH</a></td>
-                <td><a href="science.html">SCIENCE</a></td>
+                <td id="1">GENERAL</td>
+                <td id="2">SCIENCE</td>
+                <td id="3">MATH</td>
               </tr>
             </table>
           </center>
         </div>
       </div>
     </main>
+
+    <script>
+      "use strict";
+      let general = document.getElementById("1");
+      let science = document.getElementById("2");
+      let math = document.getElementById("3");
+
+      const categoryPick = async() => {
+        let response = await fetch ('/pick', {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify()
+        })
+      };
+
+
+    </script>
   </body>
 </html>
