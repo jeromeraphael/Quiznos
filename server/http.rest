@@ -1,2 +1,2 @@
-GET http://localhost:4545/general/questions
+GET http://localhost:4545/science/questions
 

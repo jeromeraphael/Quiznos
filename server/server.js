@@ -9,17 +9,19 @@ const path = require('path');
 app.use(express.json());
 app.use(express.urlencoded({extended: true})); 
 
-const getQuestionsFromDb = (questionNumber, con) => {
-  let sql = `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
-              FROM questions
-              WHERE quizId = ${String(questionNumber)}
-              ORDER BY RAND()
-              LIMIT 5;`;
-  console.log(sql)
-  con.query(sql, [], (err, results) => {
-    return results;   
-  }); 
+const getQuestionSQL = (quizId) => {
+  return `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
+  FROM questions
+  WHERE quizId = ${String(quizId)}
+  ORDER BY RAND()
+  LIMIT 5;`;
+}
 
+const sendQuestionJSON = (con, sql, res) => {
+  con.query(sql, (err, results) => {
+    if (err) throw err; 
+    res.json(results); 
+  }); 
 }
 
 var con = mysql.createConnection({
@@ -97,48 +99,20 @@ app.post('/validate-login', (req, res) => {
 });
 
 app.get('/science/questions', (req, res) => {
-  let sql = `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
-                FROM questions
-                WHERE quizId = 2
-                ORDER BY RAND()
-                LIMIT 5;`;
-  con.query(sql, (err, results) => {
-    if (err) throw err; 
-    res.json(results); 
-  });
+  sendQuestionJSON(con, getQuestionSQL(2), res); 
 }); 
 
 app.get('/math/questions', (req, res) => {
-  let sql = `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
-                FROM questions
-                WHERE quizId = 3
-                ORDER BY RAND()
-                LIMIT 5;`;
-  con.query(sql, (err, results) => {
-    if (err) throw err; 
-    res.json(results); 
-  });
+  sendQuestionJSON(con, getQuestionSQL(3), res); 
 }); 
 
 app.get('/general/questions', (req, res) => {
-  let sql = `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
-                FROM questions
-                WHERE quizId = 1
-                ORDER BY RAND()
-                LIMIT 5;`;
-  con.query(sql, (err, results) => {
-    if (err) throw err; 
-    res.json(results); 
-  });  
+  sendQuestionJSON(con, getQuestionSQL(1), res)
 }); 
 
 app.get('/questions', (req, res) => {
   let questionNumber = 1; 
-  let sql = `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
-              FROM questions
-              WHERE quizId = ${String(questionNumber)}
-              ORDER BY RAND()
-              LIMIT 5;`;
+  let sql = `SELECT * FROM questions;`
   con.query(sql, (err, results) => {
     console.log(results); 
     res.json(results); 
