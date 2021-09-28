@@ -9,6 +9,17 @@ const path = require('path');
 app.use(express.json());
 app.use(express.urlencoded({extended: true})); 
 
+const getQuestionJson = (results) => {
+    let jsonResult = {questions: [{questionText: results['questionText'], 
+                           answer1: results['answer1'],
+                           answer2: results['answer2'],
+                           answer3: results['answer3'], 
+                           answer4: results['answer4'],
+                           correctAnswer: results['correctAnswer']}]
+                          }
+    return jsonResult;  
+}
+
 var con = mysql.createConnection({
   host: "107.180.1.16",
   user: "fall2021group4",
@@ -79,9 +90,32 @@ app.post('/validate-login', (req, res) => {
     catch (e) {
       console.log(e); 
       console.log('error with /validate-login'); 
-    }
+    } 
   });
 });
+
+app.get('/science', (req, res) => {
+
+  let sql = `SELECT * FROM questions `
+
+
+}); 
+
+app.get('/math', (req, res) => {
+
+}); 
+
+app.get('/general', (req, res) => {
+  let sql = `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer
+             FROM questions
+             WHERE quizId = 1
+             ORDER BY RAND()
+             LIMIT 5;`;
+  con.query(sql, [], (err, results) => {
+    if (err) throw (err); 
+    res.json(getQuestionJson(results)); 
+  }); 
+}); 
 
 // Host: 107.180.1.16
 // Port: 3306
