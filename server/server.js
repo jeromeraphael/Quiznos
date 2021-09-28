@@ -4,6 +4,7 @@ const express = require('express');
 const app = express(); 
 const httpServer = require('http').createServer(app); 
 const mysql = require('mysql'); 
+const path = require('path'); 
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true})); 
@@ -66,18 +67,21 @@ app.post('/validate-login', (req, res) => {
         res.json({loginValid: false}); 
       }
       else {
-        res.send({loginValid: true}); 
+        console.log(results); 
+        res.json({loginValid: true}); 
       }
+      // still trying to figure out how to send a file from the parent directory since apparently 
+      // using .. is a big nono to express for security reasons 
+      // else {
+      //   res.sendFile('index.html', {root: '../'});
+      // }
     } 
-    catch {
+    catch (e) {
+      console.log(e); 
       console.log('error with /validate-login'); 
     }
   });
 });
-
-app.get('/play', (req, res) => {
-  res.sendFile(__dirname + "/index.html")
-}); 
 
 // Host: 107.180.1.16
 // Port: 3306

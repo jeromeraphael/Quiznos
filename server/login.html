@@ -5,22 +5,30 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        #login-failed {
+            color: red; 
+        }
+
+    </style>
 </head>
 <body>
     <h1>Login Below</h1>
     <form onsubmit="return false">
         <label for="username">username: </label>
         <input name="username" type="text" id="login-username">
+        <br></br>
         <label for="password">password: </label>
         <input name="password" type="text" id="login-password">
-        <input type="submit" id="submit" value="submit" onclick="validateLogin()">
+        <br>
+        <br>
+        <input type="submit" id="submit" value="Log In" onclick="validateLogin()">
     </form>
+    <p id="login-failed">Login attempt failed</p>
     <br>
-    <span id="login-failed">Login attempt failed</span>
     <button id='create-new-account-display' onclick="showCreateAccount()">Create a new account</button>
     <br>
     <br>
-    <h1>If you don't have an account, create one below </h1>
     <form id="create-account" onsubmit="return false">
         <label for="username">username: </label>
         <input id="create-username" name="username" type="text">
@@ -50,14 +58,20 @@
                 }, 
                 body: JSON.stringify({'username': username, 'password': password})
             });
-            let json = await response.json()
-            if (json['loginValid'] === true ) {
-                localStorage.setItem('username', username);
-                window.location.href = "localhost:4545/play"
-            }
-            else wrongLoginPrompt(json); 
-            console.log(JSON.stringify(json)); 
             
+            try {
+                let json = await response.json()
+                if (json['loginValid'] === true ) {
+                    localStorage.setItem('username', username);
+                    window.location.href = "localhost:4545/play"
+                }
+                else wrongLoginPrompt(json); 
+                console.log(JSON.stringify(json)); 
+            }
+            catch (e) {
+                console.log(e); 
+                console.log('going to index.html'); 
+            }
         }
 
         const wrongLoginPrompt = (response) => { 
