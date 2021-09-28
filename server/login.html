@@ -17,13 +17,13 @@
     </form>
     <br>
     <span id="login-failed">Login attempt failed</span>
-    <button id='create-new-account-display' onclick="showCreateAccount">Create a new account</button>
+    <button id='create-new-account-display' onclick="showCreateAccount()">Create a new account</button>
     <br>
     <br>
     <h1>If you don't have an account, create one below </h1>
-    <form id="create-account" method="POST">
+    <form id="create-account" onsubmit="return false">
         <label for="username">username: </label>
-        <input id="create-username" name="username" type="text>
+        <input id="create-username" name="username" type="text">
         <label for="password">password: </label>
         <input id="create-password" name="password" type="text">
         <input type="submit" onclick="addAccount()" id="submit-create-account" value="submit">
@@ -65,8 +65,8 @@
         }
 
         const addAccount = async () => {
-            let newUsername = document.getElementById('create-password').value; 
-            let newPassword = document.getElementById('create-passwor').value; 
+            let newUsername = document.getElementById('create-username').value; 
+            let newPassword = document.getElementById('create-password').value; 
             let response = await fetch('/create-account', {
                 method: "POST", 
                 credentials: "same-origin", 
@@ -75,6 +75,10 @@
                 }, 
                 body: JSON.stringify({'username': newUsername, 'password': newPassword})
             });
+            let accountSuccess = await response.json(); 
+            if (accountSuccess['accountCreated']) {
+                alert('you have successfully created your quiznos account. use these credentials to login again'); 
+            }
         }
 
     </script>

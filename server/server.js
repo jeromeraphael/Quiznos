@@ -76,7 +76,7 @@ app.post('/validate-login', (req, res) => {
 });
 
 app.get('/play', (req, res) => {
-
+  res.sendFile(__dirname + "/index.html")
 }); 
 
 // Host: 107.180.1.16
