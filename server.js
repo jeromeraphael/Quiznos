@@ -129,7 +129,7 @@ app.post('/save', (req, res) => {
 }); 
 
 app.get('/stats/:userId', (req, res) => {
-  let sql = `SELECT qs.quizId, AVG(score) from quizAttempts qs 
+  let sql = `SELECT qs.quizId, AVG(score) as "average" from quizAttempts qs 
              INNER JOIN quiz qz ON qz.quizId = qs.quizId
              WHERE userId = ? 
              GROUP BY quizId`
