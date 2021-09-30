@@ -121,6 +121,18 @@ app.get('/questions', (req, res) => {
   });
 }); 
 
+app.get('/math', (req, res) => {
+  res.sendFile('./quizPages/math.html'); 
+});
+
+app.get('/science', (req, res) => {
+  res.sendFile('./quizPages/science.html'); 
+});
+
+app.get('/general', (req, res) => {
+  res.sendFile('./quizPages/general.html'); 
+}); 
+
 app.post('/save', (req, res) => {
   let sql = `INSERT INTO quizAttempts (quizId, userId, score) VALUES (?, ?, ?);`
   con.query(sql, [req.body.quizId, req.body.userId, req.body.score], (err, results) => {
