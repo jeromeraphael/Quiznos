@@ -17,7 +17,8 @@
             </center>
         </div>
       </div>
-
+      <button onclick="startQuiz()">start quiz</button>
+      <div id="test-question-div"></div>
       <center>
           
 
@@ -90,6 +91,41 @@
             <td><button id = "dfi3" class="q5button" onclick="testAnswer5('4');">Amazon</button></td>
         </tr>
     </table>
+    <script text="text/javascript">
+        var quizId = 1
+        var userId = localStorage.getItem('userId');
+
+        const startQuiz = () => {
+            fetch('/general/questions', {
+                credentials: "same-origin", 
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+              .then(questions => questions.json())
+              .then(questions => { 
+                for (var question of questions) {
+                    let q = questions[question]; 
+                    let answers = [q['answer1'], q['answer2'], q['answer3'], q['answer4']]; 
+                    correctAnswer = answers.filter(answer => answer === q['correctAnswer']); 
+                    if (questions.hasOwnProperty(question)) {
+                        let html = `<div class='question-container'>
+                            <p class='question-text'>${q['questionText']}</p>
+                              <table class='button-table'>
+                                <tbody>
+                                    <tr>
+                                        <td><button class='answer1'>${q['answer1']}</button></td><td><button class='answer2'>${q['answer2']}</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><button class='answer3'>${q['answer3']}</button></td><td><button class='answer4'>${q['answer4']}</button></td>
+                                    </tr>
+                                </tbody>
+                              </table>`;
+                    }
+                };
+            }); 
+        }
+    </script>
       </center>
     </main>
   </body>
