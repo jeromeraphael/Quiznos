@@ -121,16 +121,16 @@ app.get('/questions', (req, res) => {
   });
 }); 
 
-app.get('/math', (req, res) => {
-  res.sendFile('./quizPages/math.html'); 
+app.get('/math', (req, res) => { 
+  res.sendFile(__dirname + '/quizPages/math.html'); 
 });
 
 app.get('/science', (req, res) => {
-  res.sendFile('./quizPages/science.html'); 
+  res.sendFile(__dirname + '/quizPages/science.html'); 
 });
 
 app.get('/general', (req, res) => {
-  res.sendFile('./quizPages/general.html'); 
+  res.sendFile(__dirname + '/quizPages/general.html'); 
 }); 
 
 app.post('/save', (req, res) => {
