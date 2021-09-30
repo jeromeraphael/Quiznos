@@ -88,11 +88,6 @@ app.post('/validate-login', (req, res) => {
         console.log(results); 
         res.json({loginValid: true, userId: results['userId']}); 
       }
-      // still trying to figure out how to send a file from the parent directory since apparently 
-      // using .. is a big nono to express for security reasons 
-      // else {
-      //   res.sendFile('index.html', {root: '../'});
-      // }
     } 
     catch (e) {
       console.log(e); 
