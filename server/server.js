@@ -86,7 +86,7 @@ app.post('/validate-login', (req, res) => {
       }
       else {
         console.log(results); 
-        res.json({loginValid: true}); 
+        res.json({loginValid: true, userId: results['userId']}); 
       }
       // still trying to figure out how to send a file from the parent directory since apparently 
       // using .. is a big nono to express for security reasons 
@@ -120,6 +120,17 @@ app.get('/questions', (req, res) => {
     res.json(results); 
   });
 }); 
+
+app.post('/save', (req, res) => {
+  let sql = `INSERT INTO quizAttempts (quizId, userId, score) VALUES (?, ?, ?);`
+  con.query(sql, [req.body.quizId, req.body.userId, req.body.score], (err, results) => {
+    console.log(`user ${req.body.userId} scored a ${req.body.score} on quiz ${req.body.quizId}`); 
+  })
+}); 
+
+app.get('/stats', (req, res) => {
+
+});
 
 // Host: 107.180.1.16
 // Port: 3306

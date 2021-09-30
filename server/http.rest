@@ -1,2 +1,12 @@
-GET http://localhost:4545/science/questions
+@hostname = localhost
+@port = 4545
+@contentType = application/json
 
+POST  http://{{hostname}}:{{port}}/save HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+    "userId": 1,
+    "quizId": 1, 
+    "score": 5
+}
