@@ -104,24 +104,22 @@
             })
               .then(questions => questions.json())
               .then(questions => { 
-                for (var question of questions) {
-                    let q = questions[question]; 
-                    let answers = [q['answer1'], q['answer2'], q['answer3'], q['answer4']]; 
-                    correctAnswer = answers.filter(answer => answer === q['correctAnswer']); 
-                    if (questions.hasOwnProperty(question)) {
-                        let html = `<div class='question-container'>
-                            <p class='question-text'>${q['questionText']}</p>
-                              <table class='button-table'>
-                                <tbody>
-                                    <tr>
-                                        <td><button class='answer1'>${q['answer1']}</button></td><td><button class='answer2'>${q['answer2']}</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td><button class='answer3'>${q['answer3']}</button></td><td><button class='answer4'>${q['answer4']}</button></td>
-                                    </tr>
-                                </tbody>
-                              </table>`;
-                    }
+                console.log(questions); 
+                for (let i = 0; i < 5; i++) { 
+                    question = questions[i]; 
+                    let html = `<div class='question-container'>
+                        <p class='question-text'>${question['questionText']}</p>
+                            <table class='button-table'>
+                            <tbody>
+                                <tr>
+                                    <td><button class='answer1'>${question['answer1']}</button></td><td><button class='answer2'>${question['answer2']}</button></td>
+                                </tr>
+                                <tr>
+                                    <td><button class='answer3'>${question['answer3']}</button></td><td><button class='answer4'>${question['answer4']}</button></td>
+                                </tr>
+                            </tbody>
+                            </table>`;
+                    document.getElementById('test-question-div').insertAdjacentHTML('beforeend', html); 
                 };
             }); 
         }
