@@ -31,6 +31,16 @@ app.get('/users', (req, res) => {
   }); 
 }); 
 
+app.get('/questions', (req, res) => {
+  con.query('SELECT * FROM questions', (err, rows) => {
+    if (err) throw err; 
+    console.log(rows); 
+    res.send(rows); 
+    con.end(); 
+  }); 
+}); 
+
+
 app.post('/create-account', (req, res) => {
   // inserting data into the database with create-account
   // post requests have a body that can be accessed through req.body
