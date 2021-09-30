@@ -128,8 +128,15 @@ app.post('/save', (req, res) => {
   })
 }); 
 
-app.get('/stats', (req, res) => {
-
+app.get('/stats/:userId', (req, res) => {
+  let sql = `SELECT qs.quizId, AVG(score) from quizAttempts qs 
+             INNER JOIN quiz qz ON qz.quizId = qs.quizId
+             WHERE userId = ? 
+             GROUP BY quizId`
+  con.query(sql, [req.params.userId], (err, results) => {
+    if (err) throw err; 
+    res.json(results); 
+  })
 });
 
 // Host: 107.180.1.16
