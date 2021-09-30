@@ -140,6 +140,10 @@ app.post('/save', (req, res) => {
   })
 }); 
 
+app.get('/play', (req, res) => {
+  res.sendFile(__dirname + 'index.html'); 
+})
+
 app.get('/stats/:userId', (req, res) => {
   let sql = `SELECT qs.quizId, AVG(score) from quizAttempts qs 
              INNER JOIN quiz qz ON qz.quizId = qs.quizId
