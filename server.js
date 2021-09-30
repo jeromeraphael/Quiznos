@@ -9,6 +9,24 @@ const path = require('path');
 app.use(express.json());
 app.use(express.urlencoded({extended: true})); 
 
+// returns the sql for the queries that generate the questions
+const getQuestionSQL = (quizId) => {
+  return `SELECT questionText, answer1, answer2, answer3, answer4, correctAnswer, explanations
+  FROM questions
+  WHERE quizId = ${String(quizId)}
+  ORDER BY RAND()
+  LIMIT 5;`;
+}
+
+// users the mysql connection object, sql statement string, and response object from express
+// to send a json of the results of a mysql query 
+const sendQuestionJSON = (con, sql, res) => {
+  con.query(sql, (err, results) => {
+    if (err) throw err; 
+    res.json(results); 
+  }); 
+}
+
 var con = mysql.createConnection({
   host: "107.180.1.16",
   user: "fall2021group4",
@@ -30,16 +48,6 @@ app.get('/users', (req, res) => {
     con.end(); 
   }); 
 }); 
-
-app.get('/questions', (req, res) => {
-  con.query('SELECT * FROM questions', (err, rows) => {
-    if (err) throw err; 
-    console.log(rows); 
-    res.send(rows); 
-    con.end(); 
-  }); 
-}); 
-
 
 app.post('/create-account', (req, res) => {
   // inserting data into the database with create-account
@@ -78,7 +86,7 @@ app.post('/validate-login', (req, res) => {
       }
       else {
         console.log(results); 
-        res.json({loginValid: true}); 
+        res.json({loginValid: true, userId: results['userId']}); 
       }
       // still trying to figure out how to send a file from the parent directory since apparently 
       // using .. is a big nono to express for security reasons 
@@ -89,12 +97,46 @@ app.post('/validate-login', (req, res) => {
     catch (e) {
       console.log(e); 
       console.log('error with /validate-login'); 
-    }
+    } 
   });
 });
 
-app.get('/play', (req, res) => {
-  res.sendFile(__dirname + '/index.html'); 
+app.get('/science/questions', (req, res) => {
+  sendQuestionJSON(con, getQuestionSQL(2), res); 
+}); 
+
+app.get('/math/questions', (req, res) => {
+  sendQuestionJSON(con, getQuestionSQL(3), res); 
+}); 
+
+app.get('/general/questions', (req, res) => {
+  sendQuestionJSON(con, getQuestionSQL(1), res)
+}); 
+
+app.get('/questions', (req, res) => {
+  let sql = `SELECT * FROM questions;`
+  con.query(sql, (err, results) => {
+    console.log(results); 
+    res.json(results); 
+  });
+}); 
+
+app.post('/save', (req, res) => {
+  let sql = `INSERT INTO quizAttempts (quizId, userId, score) VALUES (?, ?, ?);`
+  con.query(sql, [req.body.quizId, req.body.userId, req.body.score], (err, results) => {
+    console.log(`user ${req.body.userId} scored a ${req.body.score} on quiz ${req.body.quizId}`); 
+  })
+}); 
+
+app.get('/stats/:userId', (req, res) => {
+  let sql = `SELECT qs.quizId, AVG(score) from quizAttempts qs 
+             INNER JOIN quiz qz ON qz.quizId = qs.quizId
+             WHERE userId = ? 
+             GROUP BY quizId`
+  con.query(sql, [req.params.userId], (err, results) => {
+    if (err) throw err; 
+    res.json(results); 
+  })
 });
 
 // Host: 107.180.1.16
