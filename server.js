@@ -21,15 +21,16 @@ const getQuestionSQL = (quizId) => {
 // users the mysql connection object, sql statement string, and response object from express
 // to send a json of the results of a mysql query 
 const sendQuestionJSON = (con, sql, res) => {
-  con.connect(); 
-  con.query(sql, (err, results) => {
+   
+  pool.query(sql, (err, results) => {
     if (err) throw err; 
     res.json(results); 
   });
-  con.end();  
+    
 }
 
-var con = mysql.createConnection({
+var pool = mysql.createPool({
+  connectionLimit: 15,
   host: "107.180.1.16",
   user: "fall2021group4",
   password: "fall2021group4",
@@ -43,31 +44,31 @@ app.get('/', (req, res) => {
 
 app.get('/users', (req, res) => {
   res.contentType('application/json');
-  con.connect(); 
-  con.query('SELECT * FROM users', (err, rows) => {
+   
+  pool.query('SELECT * FROM users', (err, rows) => {
     if (err) throw err; 
     console.log(rows); 
     res.send(rows); 
-    con.end(); 
   }); 
+   
 }); 
 
 app.post('/create-account', (req, res) => {
   // inserting data into the database with create-account
   // post requests have a body that can be accessed through req.body
   let sql = `INSERT INTO users (username, password) VALUES (?, ?)`
-  con.connect(); 
-  con.query(sql, [req.body.username, req.body.password], (err, results) => {
+   
+  pool.query(sql, [req.body.username, req.body.password], (err, results) => {
     if (err) {
       res.send({accountCreated: false, error: err}); 
     }
     else res.send({accountCreated: true});  
   });
-  con.end();  
+    
   // querying the new information that has been just added and logging it
   // to the console so we can know what we are seeing
   // let querySql = `SELECT * FROM users WHERE username = ? AND password = ?` 
-  // con.query(querySql, [username, password], (err, results) => {
+  // pool.query(querySql, [username, password], (err, results) => {
   //   console.log(results); 
   // });
 });
@@ -78,8 +79,8 @@ app.post('/validate-login', (req, res) => {
   res.contentType('application/json'); 
   
   let sql = `SELECT * FROM users WHERE username = ? AND password = ?`;
-  con.connect(); 
-  con.query(sql, [req.body.username, req.body.password], (err, results) => {
+   
+  pool.query(sql, [req.body.username, req.body.password], (err, results) => {
     if (String(err).length > 0 && err !== null) {
       console.log(`error: ${err}`); 
     }
@@ -91,7 +92,7 @@ app.post('/validate-login', (req, res) => {
       }
       else {
         console.log(results['userId']); 
-        res.json({loginValid: true, userId: results['userId']}); 
+        res.json({loginValid: true, userId: results['userId'], userName: results['userName']}); 
       }
     } 
     catch (e) {
@@ -99,7 +100,7 @@ app.post('/validate-login', (req, res) => {
       console.log('error with /validate-login'); 
     } 
   });
-  con.end(); 
+   
 });
 
 app.get('/science/questions', (req, res) => {
@@ -116,12 +117,12 @@ app.get('/general/questions', (req, res) => {
 
 app.get('/questions', (req, res) => {
   let sql = `SELECT * FROM questions;`
-  con.connect(); 
-  con.query(sql, (err, results) => {
+   
+  pool.query(sql, (err, results) => {
     console.log(results); 
     res.json(results); 
   });
-  con.end(); 
+   
 }); 
 
 app.get('/math', (req, res) => { 
@@ -138,11 +139,11 @@ app.get('/general', (req, res) => {
 
 app.post('/save', (req, res) => {
   let sql = `INSERT INTO quizAttempts (quizId, userId, score) VALUES (?, ?, ?);`;
-  con.connect();
-  con.query(sql, [req.body.quizId, req.body.userId, req.body.score], (err, results) => {
+  
+  pool.query(sql, [req.body.quizId, req.body.userId, req.body.score], (err, results) => {
     console.log(`user ${req.body.userId} scored a ${req.body.score} on quiz ${req.body.quizId}`); 
   });
-  con.end(); 
+   
 }); 
 
 app.get('/play', (req, res) => {
@@ -150,16 +151,16 @@ app.get('/play', (req, res) => {
 })
 
 app.get('/stats/:userId', (req, res) => {
-  con.connect(); 
+   
   let sql = `SELECT qs.quizId, AVG(score) from quizAttempts qs 
              INNER JOIN quiz qz ON qz.quizId = qs.quizId
              WHERE userId = ? 
              GROUP BY quizId`
-  con.query(sql, [req.params.userId], (err, results) => {
+  pool.query(sql, [req.params.userId], (err, results) => {
     if (err) throw err; 
     res.json(results); 
   });
-  con.end(); 
+   
 });
 
 // Host: 107.180.1.16
