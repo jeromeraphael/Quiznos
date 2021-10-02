@@ -55,37 +55,38 @@
         var questionsAnswered = 0; 
 
         const loadQuizQuestions = () => {
+            // once the start quiz button is clicked, we don't need it anymore so I make it go away forever
             document.getElementById('start-quiz-button').style.display = 'none'; 
+            // fetching data in the standard way
             fetch('/general/questions', {
                 credentials: "same-origin", 
                 headers: {
                     'Content-Type': 'application/json'
                 }
             })
+            // .then() is what we do with a fetch request in order to use the data that we get because a fetch is what's called a Promise
+            // once the Promise is fulfilled asynchronously, we can do what we want with the data using .then()
+
+            // the first thing we do is convert the fulfilled Promise into a JSON, which is much more friendly to work with :) 
               .then(questions => questions.json())
               .then(questions => { 
                 localStorage.setItem('questions', JSON.stringify(questions)); 
                 console.log(questions); 
+                let testQuestionDiv = document.getElementById('test-question-div');  
+                // there will always be 5 questions, so we are using a for loop to iterate through the JSON response and create a HTML string that has the
+                // questions and their answers 
                 for (let i = 0; i < 5; i++) { 
                     let question = questions[i];
-                    let testQuestionDiv = document.getElementById('test-question-div');  
-                    let html = `<div id='question-${i}-container' class='question-container center'>
-                        <span class='question-text center'>${question['questionText']}</span>
-                            <table class='button-table center'>
-                            <tbody>
-                                <tr>
-                                    <td><button class='answer1 answer question-${i}'>${question['answer1']}</button></td><td><button class='answer2 answer question-${i}'>${question['answer2']}</button></td>
-                                </tr>
-                                <tr>
-                                    <td><button class='answer3 answer question-${i}'>${question['answer3']}</button></td><td><button class='answer4 answer question-${i}'>${question['answer4']}</button></td>
-                                </tr>
-                            </tbody>
-                            </table>
-                            <br>`; 
+                    let html = convertQuestionToJSON(question, i); 
+                    // inserting the generated div into the question div that is empty when the pages loads using insertAdjacentHTML
                     testQuestionDiv.insertAdjacentHTML('beforeend', html);
+                    
+                    // adding the right event listeners
                     let answers = document.getElementsByClassName(`question-${i}`);
                     for (let j = 0; j < 4; j++) {
                         let button = testQuestionDiv.lastChild.getElementsByTagName('button')[j];
+                        // if the button's innerHTML, which is the answer text, is the same as the question's correct answer
+                        // the user's score is increased and the button turns green and a nice alert happens
                         if (button.innerHTML === question['correctAnswer']) {
                             button.addEventListener('click', () => {
                                 score += 1;
@@ -93,17 +94,20 @@
                                 alert('correct answer');
                             });
                         }
+                        // otherwise, the answer turns red and you can't click another one
                         else {
                             button.addEventListener('click', () => {
                                 button.style.backgroundColor = 'red'
                                 alert('incorrect answer');
                             }); 
                         }
+                        // this event listener makes it so that when you click a button to answer a question, you can't click
+                        // any of the other answers
                         button.addEventListener('click', () => {
                             for (let k = 0; k < 4; k++) {
                                 document.getElementsByClassName(`question-${i}`)[k].disabled = true;
-                                questionsAnswered += 1;
-                                checkForQuizCompletion();   
+                                questionsAnswered += 0.25;
+                                checkForQuizCompletion(questionsAnswered);   
                             }
                         });
                     }
@@ -111,10 +115,38 @@
             });
         }
 
-        const checkForQuizCompletion = () => {
+        const saveScore = (userId, quizId, score) => {
+            fetch('/save', {
+                credentials: "same-origin", 
+                method: "POST", 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({quizId: quizId, userId: userId, score: score})
+            });
+        }
+
+        const checkForQuizCompletion = (answered) => {
             if (questionsAnswered === 5) {
-                document.getElementById('test-question-div').insertAdjacentHTML('<button class="center" onclick="saveScore()">save score </button>'); 
+                document.getElementById('test-question-div').insertAdjacentHTML('beforeend', '<button class="center" onclick="saveScore()">save score </button>'); 
             }
+        }
+
+        const convertQuestionToJSON = (question, questionNumber) => {
+            // buttons have a class of answer1, answer, and question-# (from 0-4)
+            return `<div id='question-${questionNumber}-container' class='question-container center'>
+                        <span class='question-text center'>${question['questionText']}</span>
+                            <table class='button-table center'>
+                            <tbody>
+                                <tr>
+                                    <td><button class='answer1 answer question-${questionNumber}'>${question['answer1']}</button></td><td><button class='answer2 answer question-${questionNumber}'>${question['answer2']}</button></td>
+                                </tr>
+                                <tr>
+                                    <td><button class='answer3 answer question-${questionNumber}'>${question['answer3']}</button></td><td><button class='answer4 answer question-${questionNumber}'>${question['answer4']}</button></td>
+                                </tr>
+                            </tbody>
+                            </table>
+                            <br>`; 
         }
 
     </script>
