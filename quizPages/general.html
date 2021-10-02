@@ -13,7 +13,7 @@
         <center><h1>QUIZKNOWS</h1></center>
         <div id="categories">
             <center>
-                <p><a href="index.html">HOME</a></p>
+                <p><a href="/play">HOME</a></p>
             </center>
         </div>
       </div>
@@ -92,8 +92,9 @@
         </tr>
     </table>
     <script text="text/javascript">
-        var quizId = 1
+        var quizId = 1;
         var userId = localStorage.getItem('userId');
+        var score = 0; 
 
         const startQuiz = () => {
             fetch('/general/questions', {
@@ -104,10 +105,11 @@
             })
               .then(questions => questions.json())
               .then(questions => { 
+                localStorage.setItem('questions', JSON.stringify(questions)); 
                 console.log(questions); 
                 for (let i = 0; i < 5; i++) { 
                     question = questions[i]; 
-                    let html = `<div class='question-container'>
+                    let html = `<div id='question-${i}' class='question-container'>
                         <p class='question-text'>${question['questionText']}</p>
                             <table class='button-table'>
                             <tbody>
@@ -118,11 +120,38 @@
                                     <td><button class='answer3'>${question['answer3']}</button></td><td><button class='answer4'>${question['answer4']}</button></td>
                                 </tr>
                             </tbody>
-                            </table>`;
+                            </table>`; 
                     document.getElementById('test-question-div').insertAdjacentHTML('beforeend', html); 
-                };
+                };  
             }); 
         }
+
+        const updateCorrectAnswers = () => {
+            let questions = JSON.parse(localStorage.getItem('questions'));
+            for (let i = 0; i < 5; i ++) {
+                let questionDiv = document.getElementById(`question${i}`);
+                let answers = questionDiv.getElementsByTagName('button'); 
+                answers.forEach(answer => {
+                    console.log(answer.innerHTML); 
+                    console.log(questions[i]['correctAnswer']);
+                    if (answer.innerHTML === questions[i]['correctAnswer']) {
+                        answer.addEventListener('click', () => {
+                            score += 1;
+                            answer.style.backgroundColor = 'green';  
+                        }); 
+                    }
+                    else {
+                        answer.addEventListener('click', () => {
+                            answer.style.backgroundColor = 'red'
+                        }); 
+                    } 
+                });
+
+            }   
+        }
+
+        updateCorrectAnswers(); 
+
     </script>
       </center>
     </main>

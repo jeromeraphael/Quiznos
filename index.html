@@ -23,6 +23,11 @@
       body {
         background-image: url("HOMEPAGE.png");
       }
+
+      td {
+        padding: 2vw; 
+      }
+
     </style>
   </head>
 
@@ -49,6 +54,14 @@
       let general = document.getElementById("1");
       let science = document.getElementById("2");
       let math = document.getElementById("3");
+
+      const redirectToQuiz = (quizName) => {
+        window.location.href = `http://localhost:4545/${quizName}`
+      }
+
+      general.addEventListener('click', () => {redirectToQuiz('general')});
+      science.addEventListener('click', () => {redirectToQuiz('science')});
+      math.addEventListener('click', () => {redirectToQuiz('math')}); 
 
       const categoryPick = async() => {
         let response = await fetch ('/pick', {

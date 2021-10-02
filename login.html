@@ -9,7 +9,7 @@
         *{
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         }
-        #login-failed {
+        #login-failed, #login-disabled {
             color: red; 
         }
         .center{
@@ -38,7 +38,8 @@
     <hr>
     <p>New to Quizknows?</p>
 
-    <p id="login-failed">Login attempt failed</p>
+    <p id="login-failed">Login attempt <span id="login-failure-number"></span> failed</p>
+    <p id="login-disabled">You have tried to log in too many times. Login is now disabled.</p>
     <br>
     <button id='create-new-account-display' onclick="showCreateAccount()">Create a new account</button>
     <br>
@@ -54,10 +55,15 @@
 
     <script>
         "use strict"; 
+        localStorage.clear(); 
+        let loginAttemptCount = 0; 
         let createAccount = document.getElementById("create-account");
         createAccount.style.display = 'none'; 
         let loginFailed = document.getElementById('login-failed');
         loginFailed.style.display = 'none'; 
+        let loginDisabled = document.getElementById('login-disabled'); 
+        loginDisabled.style.display = 'none'; 
+
         
         const showCreateAccount = () => {
             document.getElementById("create-account").style.display = 'block'; 
@@ -77,11 +83,20 @@
             
             try {
                 let json = await response.json()
+                console.log(JSON.stringify(json));
                 if (json['loginValid'] === true ) {
-                    localStorage.setItem('username', json['userId']);
+                    localStorage.setItem('userId', json['userId']);
                     window.location.href = "http://localhost:4545/play"
                 }
-                else wrongLoginPrompt(json); 
+                else {
+                    if (loginAttemptCount < 10) {
+                        wrongLoginPrompt(json); 
+                    }
+                    else {
+                        loginDisabled.style.display = '';
+                        document.getElementById('submit').disabled = true;
+                    }  
+                }
                 console.log(JSON.stringify(json)); 
             }
             catch (e) {
@@ -91,7 +106,9 @@
         }
 
         const wrongLoginPrompt = (response) => { 
-            loginFailed.style.display = ''; 
+            loginFailed.style.display = '';
+            loginAttemptCount += 1; 
+            document.getElementById('login-failure-number').innerHTML = loginAttemptCount; 
         }
 
         const addAccount = async () => {
