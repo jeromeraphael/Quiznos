@@ -124,11 +124,35 @@
                 },
                 body: JSON.stringify({"quizId": quizId, "userId": userId, "score": score})
             });
+            document.getElementById('save-score').disabled = true; 
+        }
+
+        const playAgain = () => {
+            // making save and play again buttons disappear and clearing quiz questions and loading new ones
+            document.getElementById('button-div').style.display = 'none';
+            document.getElementById('test-question-div').innerHTML = ''; 
+            questionsAnswered = 0;
+            score = 0;  
+            loadQuizQuestions();  
+        }
+
+        const newQuiz = () => {
+            window.location.href = '/play';
         }
 
         const checkForQuizCompletion = (answered) => {
+            let buttonDiv = `<div id="button-div" class="center">
+                                <button class="center" id="save-score" onclick="saveScore()">save score </button>
+                                <button class="center" id="play-again" onclick="playAgain()">play again</button>
+                                <button class="center" id="new-quiz" onclick="newQuiz()">take a different quiz</button>
+                            </div>`
             if (questionsAnswered === 5) {
-                document.getElementById('test-question-div').insertAdjacentHTML('beforeend', '<button class="center" onclick="saveScore()">save score </button>'); 
+                if (!!document.getElementById('button-div')) {
+                    document.getElementById('button-div').style.display = ''; 
+                }
+                else {
+                    document.getElementById('test-question-div').insertAdjacentHTML('beforeend', buttonDiv);
+                }
             }
         }
 
@@ -150,7 +174,6 @@
         }
 
     </script>
-      
     </main>
   </body>
 </html>
