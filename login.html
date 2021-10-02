@@ -70,7 +70,8 @@
         }
 
         const validateLogin = async () =>  {
-            let username = document.getElementById('login-username').value; 
+            let username = document.getElementById('login-username').value;
+            localStorage.setItem('username', username);  
             let password = document.getElementById('login-password').value; 
             let response = await fetch('/validate-login', {
                 method: "POST", 
@@ -83,9 +84,8 @@
             
             try {
                 let json = await response.json()
-                localStorage.setItem('loginResponse', (JSON.stringify(json)));
                 if (json['loginValid'] === true ) {
-                    localStorage.setItem('userId', JSON.stringify(json));
+                    localStorage.setItem('userId', json['userId']);
                     window.location.href = "http://localhost:4545/play"
                 }
                 else {

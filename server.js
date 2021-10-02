@@ -88,11 +88,11 @@ app.post('/validate-login', (req, res) => {
       // if there are any results, the user exists in the database, so we reuse
       if (results.length === 0) {
         console.log(results); 
-        res.json({loginValid: false, userId: results['userId'], userName: results['userName']}); 
+        res.send({loginValid: false, userId: results[0]['userId'], userName: results[0]['userName']}); 
       }
       else {
-        console.log(results['userId']); 
-        res.json({loginValid: true, userId: results['userId'], userName: results['userName']}); 
+        console.log(results); 
+        res.send({loginValid: true, userId: results[0]['userId'], userName: results[0]['userName']}); 
       }
     } 
     catch (e) {
