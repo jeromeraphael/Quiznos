@@ -5,6 +5,37 @@
     <title>The General Quiz That No One Asked For</title>
 
     <script src="script.js"></script>
+    <style>
+        * {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        .center {
+            margin: auto;
+            display: table;   
+        }
+
+        .test-question-div {
+            width: auto; 
+        }
+
+        .answer {
+            position: relative; 
+            display: table-cell; 
+            width: 100%;
+            height: 100%;  
+        }
+
+        td {
+            position: relative; 
+            width: 50%; 
+        }
+
+        button {
+            font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+        }
+
+    </style>
   </head>
 
   <body>
@@ -17,12 +48,12 @@
             </center>
         </div>
       </div>
-      <button onclick="startQuiz()">start quiz</button>
-      <div id="test-question-div"></div>
+      <button id="start-quiz-button" class='center' onclick="startQuiz()">start quiz</button>
+      <div id="test-question-div" class="center"></div>
       <center>
           
 
-      <table>
+      <!-- <table>
         <caption>Where is Mount Rushmore located?</caption>
 
         <tr>
@@ -89,7 +120,7 @@
         <tr>
             <td><button id = "dfi2" class="q5button" onclick="testAnswer5('3');">Volga</button></td>
             <td><button id = "dfi3" class="q5button" onclick="testAnswer5('4');">Amazon</button></td>
-        </tr>
+        </tr> -->
     </table>
     <script text="text/javascript">
         var quizId = 1;
@@ -97,6 +128,7 @@
         var score = 0; 
 
         const startQuiz = () => {
+            document.getElementById('start-quiz-button').style.display = 'none'; 
             fetch('/general/questions', {
                 credentials: "same-origin", 
                 headers: {
@@ -109,18 +141,19 @@
                 console.log(questions); 
                 for (let i = 0; i < 5; i++) { 
                     question = questions[i]; 
-                    let html = `<div id='question-${i}' class='question-container'>
-                        <p class='question-text'>${question['questionText']}</p>
-                            <table class='button-table'>
+                    let html = `<div id='question-${i}' class='question-container center'>
+                        <span class='question-text center'>${question['questionText']}</span>
+                            <table class='button-table center'>
                             <tbody>
                                 <tr>
-                                    <td><button class='answer1'>${question['answer1']}</button></td><td><button class='answer2'>${question['answer2']}</button></td>
+                                    <td><button class='answer1 answer'>${question['answer1']}</button></td><td><button class='answer2 answer'>${question['answer2']}</button></td>
                                 </tr>
                                 <tr>
-                                    <td><button class='answer3'>${question['answer3']}</button></td><td><button class='answer4'>${question['answer4']}</button></td>
+                                    <td><button class='answer3 answer'>${question['answer3']}</button></td><td><button class='answer4 answer'>${question['answer4']}</button></td>
                                 </tr>
                             </tbody>
-                            </table>`; 
+                            </table>
+                            <br>`; 
                     document.getElementById('test-question-div').insertAdjacentHTML('beforeend', html); 
                 };  
             }); 

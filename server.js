@@ -20,7 +20,7 @@ const getQuestionSQL = (quizId) => {
 
 // users the mysql connection object, sql statement string, and response object from express
 // to send a json of the results of a mysql query 
-const sendQuestionJSON = (con, sql, res) => {
+const sendQuestionJSON = (pool, sql, res) => {
    
   pool.query(sql, (err, results) => {
     if (err) throw err; 
@@ -88,11 +88,11 @@ app.post('/validate-login', (req, res) => {
       // if there are any results, the user exists in the database, so we reuse
       if (results.length === 0) {
         console.log(results); 
-        res.send({loginValid: false, userId: results[0]['userId'], userName: results[0]['userName']}); 
+        res.send({loginValid: false, userId: results[0]['userId'], userName: results[0]['username']}); 
       }
       else {
         console.log(results); 
-        res.send({loginValid: true, userId: results[0]['userId'], userName: results[0]['userName']}); 
+        res.send({loginValid: true, userId: results[0]['userId'], userName: results[0]['username']}); 
       }
     } 
     catch (e) {
@@ -104,15 +104,15 @@ app.post('/validate-login', (req, res) => {
 });
 
 app.get('/science/questions', (req, res) => {
-  sendQuestionJSON(con, getQuestionSQL(2), res); 
+  sendQuestionJSON(pool, getQuestionSQL(2), res); 
 }); 
 
 app.get('/math/questions', (req, res) => {
-  sendQuestionJSON(con, getQuestionSQL(3), res); 
+  sendQuestionJSON(pool, getQuestionSQL(3), res); 
 }); 
 
 app.get('/general/questions', (req, res) => {
-  sendQuestionJSON(con, getQuestionSQL(1), res)
+  sendQuestionJSON(pool, getQuestionSQL(1), res)
 }); 
 
 app.get('/questions', (req, res) => {
