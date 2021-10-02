@@ -115,14 +115,14 @@
             });
         }
 
-        const saveScore = (userId, quizId, score) => {
+        const saveScore = () => {
             fetch('/save', {
                 credentials: "same-origin", 
                 method: "POST", 
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({quizId: quizId, userId: userId, score: score})
+                body: JSON.stringify({"quizId": quizId, "userId": userId, "score": score})
             });
         }
 
