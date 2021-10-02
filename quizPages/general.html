@@ -40,17 +40,15 @@
 
   <body>
     <main>
-      <div id="homepage">
-        <center><h1>QUIZKNOWS</h1></center>
+      <div id="homepage" class='center'>
+        <h1>QUIZKNOWS</h1>
         <div id="categories">
-            <center>
-                <p><a href="/play">HOME</a></p>
-            </center>
+            <p><a class='center' href="/play">HOME</a></p>
         </div>
       </div>
-      <button id="start-quiz-button" class='center' onclick="startQuiz()">start quiz</button>
+      <button id="start-quiz-button" class='center' onclick="loadQuizQuestions()">start quiz</button>
       <div id="test-question-div" class="center"></div>
-      <center>
+      
           
 
       <!-- <table>
@@ -127,7 +125,7 @@
         var userId = localStorage.getItem('userId');
         var score = 0; 
 
-        const startQuiz = () => {
+        const loadQuizQuestions = () => {
             document.getElementById('start-quiz-button').style.display = 'none'; 
             fetch('/general/questions', {
                 credentials: "same-origin", 
@@ -140,7 +138,8 @@
                 localStorage.setItem('questions', JSON.stringify(questions)); 
                 console.log(questions); 
                 for (let i = 0; i < 5; i++) { 
-                    question = questions[i]; 
+                    let question = questions[i];
+                    let testQuestionDiv = document.getElementById('test-question-div');  
                     let html = `<div id='question-${i}' class='question-container center'>
                         <span class='question-text center'>${question['questionText']}</span>
                             <table class='button-table center'>
@@ -154,39 +153,28 @@
                             </tbody>
                             </table>
                             <br>`; 
-                    document.getElementById('test-question-div').insertAdjacentHTML('beforeend', html); 
-                };  
-            }); 
-        }
-
-        const updateCorrectAnswers = () => {
-            let questions = JSON.parse(localStorage.getItem('questions'));
-            for (let i = 0; i < 5; i ++) {
-                let questionDiv = document.getElementById(`question${i}`);
-                let answers = questionDiv.getElementsByTagName('button'); 
-                answers.forEach(answer => {
-                    console.log(answer.innerHTML); 
-                    console.log(questions[i]['correctAnswer']);
-                    if (answer.innerHTML === questions[i]['correctAnswer']) {
-                        answer.addEventListener('click', () => {
-                            score += 1;
-                            answer.style.backgroundColor = 'green';  
-                        }); 
+                    testQuestionDiv.insertAdjacentHTML('beforeend', html);
+                    for (let j = 0; j < 4; j++) {
+                        let button = testQuestionDiv.lastChild.getElementsByTagName('button')[j]
+                        if (button.innerHTML === question['correctAnswer']) {
+                            button.addEventListener('click', () => {
+                                score += 1;
+                                button.style.backgroundColor = 'green';
+                                alert('correct answer');   
+                            });
+                        }
+                        else {
+                            button.addEventListener('click', () => {
+                                button.style.backgroundColor = 'red'
+                                alert('incorrect answer'); 
+                            }); 
+                        }
                     }
-                    else {
-                        answer.addEventListener('click', () => {
-                            answer.style.backgroundColor = 'red'
-                        }); 
-                    } 
-                });
-
-            }   
+                };  
+            });
         }
-
-        updateCorrectAnswers(); 
-
     </script>
-      </center>
+      
     </main>
   </body>
 </html>
