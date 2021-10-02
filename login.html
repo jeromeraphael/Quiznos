@@ -83,7 +83,7 @@
             
             try {
                 let json = await response.json()
-                console.log(JSON.stringify(json));
+                localStorage.setItem('loginResponse', (JSON.stringify(json)));
                 if (json['loginValid'] === true ) {
                     localStorage.setItem('userId', json['userId']);
                     window.location.href = "http://localhost:4545/play"
