@@ -36,6 +36,78 @@
           stroke-dashoffset: 0;
         }
       }
+      * {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        .center {
+            margin: auto;
+            display: table;   
+        }
+
+        .test-question-div {
+            width: auto; 
+        }
+
+        .question-container {
+            width: 80vw; 
+        }
+
+        .explanation {
+            font-style: italic;
+            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            display: none; 
+            word-wrap: break-word; 
+            width: inherit; 
+            text-align: center;
+        }
+
+        .answer {
+            position: relative; 
+            display: table-cell; 
+            width: 100%;
+            height: 100%;  
+        }
+
+        h1 {
+            color: burlywood; 
+        }
+
+        td {
+            position: relative; 
+            width: 50%; 
+        }
+
+        button {
+            font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+            transition-duration: 0.2s; 
+        }
+
+        .btn-div:hover {
+            background-color: lightskyblue;
+            border-color: lightskyblue;  
+            color: white; 
+        }
+
+        .btn-div {
+            border: 2px solid burlywood;
+            padding: max(1px, 1.5vw); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: white;
+            color: black; 
+            border-radius: 2px; 
+        }
+
+        .btn-div-td {
+            width: auto; 
+            padding: 3vw; 
+            margin: 3vh; 
+        }
+
+
+        #calc {
+            font-size: 25px; 
+        }
     </style>
   </head>
 
@@ -81,172 +153,143 @@
       </div>
 
       <!-- QUESTIONS -->
-      <center>
-        <table>
-          <caption>
-            What is the fear of closely-packed holes?
-          </caption>
+      <button id="start-quiz-button" class='center' onclick="loadQuizQuestions()">start quiz</button>
+      <div id="test-question-div" class="center"></div>
+      <script text="text/javascript">
+        var quizId = 2;
+        var userId = localStorage.getItem('userId');
+        var score = 0; 
+        var questionsAnswered = 0; 
 
-          <tr>
-            <td>
-              <button id="c1" class="q1button" onclick="testAnswer1('1');">
-                Trypophobia
-              </button>
-            </td>
-            <td>
-              <button id="do1" class="q1button" onclick="testAnswer1('2');">
-                Sugma
-              </button>
-            </td>
-          </tr>
+        const loadQuizQuestions = () => {
+            // once the start quiz button is clicked, we don't need it anymore so I make it go away forever
+            document.getElementById('start-quiz-button').style.display = 'none'; 
+            // fetching data in the standard way
+            fetch('/science/questions', {
+                credentials: "same-origin", 
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            // .then() is what we do with a fetch request in order to use the data that we get because a fetch is what's called a Promise
+            // once the Promise is fulfilled asynchronously, we can do what we want with the data using .then()
 
-          <tr>
-            <td>
-              <button id="do2" class="q1button" onclick="testAnswer1('3');">
-                Ligma
-              </button>
-            </td>
-            <td>
-              <button id="do3" class="q1button" onclick="testAnswer1('4');">
-                Arachnophobia
-              </button>
-            </td>
-          </tr>
-        </table>
+            // the first thing we do is convert the fulfilled Promise into a JSON, which is much more friendly to work with :) 
+              .then(questions => questions.json())
+              .then(questions => { 
+                // localStorage.setItem('questions', JSON.stringify(questions)); 
+                // console.log(questions); 
+                let testQuestionDiv = document.getElementById('test-question-div');  
+                // there will always be 5 questions, so we are using a for loop to iterate through the JSON response and create a HTML string that has the
+                // questions and their answers 
+                for (let i = 0; i < 5; i++) { 
+                    let question = questions[i];
+                    let html = convertQuestionToJSON(question, i); 
+                    // inserting the generated div into the question div that is empty when the pages loads using insertAdjacentHTML
+                    testQuestionDiv.insertAdjacentHTML('beforeend', html);
+                    
+                    // adding the right event listeners
+                    let answers = document.getElementsByClassName(`question-${i}`);
+                    for (let j = 0; j < 4; j++) {
+                        let button = testQuestionDiv.lastChild.getElementsByTagName('button')[j];
+                        // if the button's innerHTML, which is the answer text, is the same as the question's correct answer
+                        // the user's score is increased and the button turns green and a nice alert happens
+                        if (button.innerHTML === question['correctAnswer']) {
+                            button.addEventListener('click', () => {
+                                score += 1;
+                                button.style.backgroundColor = 'green';
+                                button.style.color = 'white'; 
+                                // alert('correct answer');
+                            });
+                        }
+                        // otherwise, the answer turns red and you can't click another one
+                        else {
+                            button.addEventListener('click', () => {
+                                button.style.backgroundColor = 'red'
+                                button.style.color = 'white'; 
+                                // alert('incorrect answer');
+                            }); 
+                        }
+                        // this event listener makes it so that when you click a button to answer a question, you can't click
+                        // any of the other answers
+                        button.addEventListener('click', () => {
+                            document.getElementsByClassName(`explanation-${i}`)[0].style.display = 'block'; 
+                            for (let k = 0; k < 4; k++) {
+                                document.getElementsByClassName(`question-${i}`)[k].disabled = true;
+                                questionsAnswered += 0.25;
+                                checkForQuizCompletion(questionsAnswered);   
+                            }
+                        });
+                    }
+                }  
+            });
+        }
 
-        <table>
-          <caption>
-            Who is credited with coming up with the theory of evolution?
-          </caption>
+        const saveScore = () => {
+            fetch('/save', {
+                credentials: "same-origin", 
+                method: "POST", 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({"quizId": quizId, "userId": userId, "score": score})
+            });
+            document.getElementById('save-score').disabled = true; 
+        }
 
-          <tr>
-            <td>
-              <button
-                id="c2"
-                id="c2"
-                class="q2button"
-                onclick="testAnswer2('1');"
-              >
-                Charles Darwin
-              </button>
-            </td>
-            <td>
-              <button id="dt1" class="q2button" onclick="testAnswer2('2');">
-                Isaac Newton
-              </button>
-            </td>
-          </tr>
+        const playAgain = () => {
+            // making save and play again buttons disappear and clearing quiz questions and loading new ones
+            document.getElementById('button-div').style.display = 'none';
+            document.getElementById('test-question-div').innerHTML = ''; 
+            questionsAnswered = 0;
+            score = 0;  
+            loadQuizQuestions();  
+        }
 
-          <tr>
-            <td>
-              <button id="dt2" class="q2button" onclick="testAnswer2('3');">
-                Werner Heisenberg
-              </button>
-            </td>
-            <td>
-              <button id="dt3" class="q2button" onclick="testAnswer2('4');">
-                Ronald Reagan
-              </button>
-            </td>
-          </tr>
-        </table>
+        const newQuiz = () => {
+            window.location.href = '/play';
+        }
 
-        <table>
-          <caption>
-            Which of the following is the human body’s largest organ?
-          </caption>
+        const checkForQuizCompletion = (answered) => {
+            let buttonDiv = `<div id="button-div" class="center">
+                <table id='button-div-table'>
+                    <tbody>
+                        <tr>
+                            <td class='btn-div-td'><button class="center btn-div" id="save-score" onclick="saveScore()">save score </button></td>
+                            <td class='btn-div-td'><button class="center btn-div" id="play-again" onclick="playAgain()">play again</button></td>
+                            <td class='btn-div-td'><button class="center btn-div" id="new-quiz" onclick="newQuiz()">different quiz</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                            </div>`
+            if (questionsAnswered === 5) {
+                if (!!document.getElementById('button-div')) {
+                    document.getElementById('button-div').style.display = ''; 
+                }
+                else {
+                    document.getElementById('test-question-div').insertAdjacentHTML('beforeend', buttonDiv);
+                }
+            }
+        }
 
-          <tr>
-            <td>
-              <button id="c3" class="q3button" onclick="testAnswer3('1');">
-                Skin
-              </button>
-            </td>
-            <td>
-              <button id="dth1" class="q3button" onclick="testAnswer3('2');">
-                Ben's Brain
-              </button>
-            </td>
-          </tr>
+        const convertQuestionToJSON = (question, questionNumber) => {
+            // buttons have a class of answer1, answer, and question-# (from 0-4)
+            return `<div id='question-${questionNumber}-container' class='question-container center'>
+                        <span class='question-text center'>${question['questionText']}</span>\
+                        <div class='center explanation explanation-${questionNumber}'>${question['explanations']}</div>
+                            <table class='button-table center'>
+                            <tbody>
+                                <tr>
+                                    <td><button class='answer1 answer question-${questionNumber}'>${question['answer1']}</button></td><td><button class='answer2 answer question-${questionNumber}'>${question['answer2']}</button></td>
+                                </tr>
+                                <tr>
+                                    <td><button class='answer3 answer question-${questionNumber}'>${question['answer3']}</button></td><td><button class='answer4 answer question-${questionNumber}'>${question['answer4']}</button></td>
+                                </tr>
+                            </tbody>
+                            </table>
+                            <br>`; 
+        }
 
-          <tr>
-            <td>
-              <button id="dth2" class="q3button" onclick="testAnswer3('3');">
-                Large Intestine
-              </button>
-            </td>
-            <td>
-              <button id="dth3" class="q3button" onclick="testAnswer3('4');">
-                Lungs
-              </button>
-            </td>
-          </tr>
-        </table>
-
-        <table>
-          <caption>
-            How many teeth does an adult human have?
-          </caption>
-
-          <tr>
-            <td>
-              <button id="c4" class="q4button" onclick="testAnswer4('1');">
-                32
-              </button>
-            </td>
-            <td>
-              <button id="df1" class="q4button" onclick="testAnswer4('2');">
-                26
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <button id="df2" class="q4button" onclick="testAnswer4('3');">
-                24
-              </button>
-            </td>
-            <td>
-              <button id="df3" class="q4button" onclick="testAnswer4('4');">
-                40
-              </button>
-            </td>
-          </tr>
-        </table>
-
-        <table>
-          <caption>
-            Which uranium isotope is used for fission in nuclear reactors?
-          </caption>
-
-          <tr>
-            <td>
-              <button id="c5" class="q5button" onclick="testAnswer5('1');">
-                Uranium-235
-              </button>
-            </td>
-            <td>
-              <button id="dfi1" class="q5button" onclick="testAnswer5('2');">
-                Uranium-236
-              </button>
-            </td>
-          </tr>
-
-          <tr>
-            <td>
-              <button id="dfi2" class="q5button" onclick="testAnswer5('3');">
-                Uranium-238
-              </button>
-            </td>
-            <td>
-              <button id="dfi3" class="q5button" onclick="testAnswer5('4');">
-                Uranium-241
-              </button>
-            </td>
-          </tr>
-        </table>
-      </center>
-    </main>
+    </script>
   </body>
 </html>
