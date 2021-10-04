@@ -235,6 +235,8 @@
                 body: JSON.stringify({"quizId": quizId, "userId": userId, "score": score})
             });
             document.getElementById('save-score').disabled = true; 
+            document.getElementById('save-score').style.display = 'none'; 
+            document.getElementById('test-question-div').insertAdjacentHTML('beforeend', '<p class="center">Score saved.</p>');  
         }
 
         const playAgain = () => {
