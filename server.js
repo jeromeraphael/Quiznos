@@ -36,7 +36,8 @@ var con = mysql.createConnection({
 
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/login.html'); 
+    // res.sendFile(__dirname + '/login.html'); 
+    res.sendFile(path.join(__dirname + '/login.html'));
 }); 
 
 app.get('/users', (req, res) => {
@@ -101,6 +102,15 @@ app.post('/validate-login', (req, res) => {
   });
 });
 
+app.get('/play', (req, res) => {
+  // res.sendFile(__dirname + '/index.html')
+  res.sendFile(path.join(__dirname + '/index.html'));
+}); 
+
+app.get('/general', (req, res) => {
+  res.sendFile(path.join(__dirname + '/quizPages/general.html'));
+}); 
+
 app.get('/science/questions', (req, res) => {
   sendQuestionJSON(con, getQuestionSQL(2), res); 
 }); 
@@ -112,7 +122,7 @@ app.get('/math/questions', (req, res) => {
 app.get('/general/questions', (req, res) => {
   sendQuestionJSON(con, getQuestionSQL(1), res)
 }); 
-
+  
 app.get('/questions', (req, res) => {
   let sql = `SELECT * FROM questions;`
   con.query(sql, (err, results) => {
@@ -138,7 +148,7 @@ app.get('/stats/:userId', (req, res) => {
     res.json(results); 
   })
 });
-
+  
 // Host: 107.180.1.16
 // Port: 3306
 // Username: 2021group4

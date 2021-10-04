@@ -19,10 +19,6 @@
           sans-serif;
         font-size: 75px;
       }
-
-      body {
-        background-image: url("HOMEPAGE.png");
-      }
     </style>
   </head>
 
@@ -34,9 +30,9 @@
           <center>
             <table>
               <tr>
-                <td id="1">GENERAL</td>
-                <td id="2">SCIENCE</td>
-                <td id="3">MATH</td>
+                <button onclick="generalQuiz()" id="1">General</button>
+                <button onclick="scienceQuiz()" id="2">Science</button>
+                <button onclick="mathQuiz()" id="3">Math</button>
               </tr>
             </table>
           </center>
@@ -45,21 +41,65 @@
     </main>
 
     <script>
-      "use strict";
-      let general = document.getElementById("1");
-      let science = document.getElementById("2");
-      let math = document.getElementById("3");
+      "use strict"; 
+      // GENERAL
+      const generalQuiz = async () =>  {
+            // let username = document.getElementById('login-username').value; 
+            // let password = document.getElementById('login-password').value; 
+            let response = await fetch('/general', {
+                method: "POST", 
+                credentials: "same-origin", 
+                headers: {
+                    'Content-Type': 'application/json' 
+                }, 
+            });
+            
+            try {
+                let json = await response.json()
+                if (json['loginValid'] === true ) {
+                    // localStorage.setItem('username', username);
+                    window.location.href = "http://localhost:4545/general/questions"
+                }
+                else wrongLoginPrompt(json); 
+                console.log(JSON.stringify(json)); 
+            }
+            catch (e) {
+                console.log(e); 
+                console.log('going to index.html'); 
+                window.location.href = "http://localhost:4545/general/"
+            }
+        }
 
-      const categoryPick = async() => {
-        let response = await fetch ('/pick', {
-          method: "POST",
-          credentials: "same-origin",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify()
-        })
-      };
+        // SCIENCE
+        const scienceQUiz = async () =>  {
+            let response = await fetch('/general', {
+                method: "POST", 
+                credentials: "same-origin", 
+                headers: {
+                    'Content-Type': 'application/json' 
+                }, 
+            });
+            
+            try {
+                let json = await response.json()
+                if (json['loginValid'] === true ) {
+                    // localStorage.setItem('username', username);
+                    window.location.href = "http://localhost:4545/general/questions"
+                }
+                else wrongLoginPrompt(json); 
+                console.log(JSON.stringify(json)); 
+            }
+            catch (e) {
+                console.log(e); 
+                console.log('going to index.html'); 
+                window.location.href = "http://localhost:4545/general/"
+            }
+        }
+
+        // MATH
+        // INTERNAL CSS AND .jS
+
+        // SCIENCE
 
 
     </script>
