@@ -39,6 +39,10 @@
             height: 100%;  
         }
 
+        h1 {
+            color: burlywood; 
+        }
+
         td {
             position: relative; 
             width: 50%; 
@@ -46,10 +50,28 @@
 
         button {
             font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+            transition-duration: 0.2s; 
         }
 
-        button:hover {
-            
+        .btn-div:hover {
+            background-color: lightskyblue;
+            border-color: lightskyblue;  
+            color: white; 
+        }
+
+        .btn-div {
+            border: 2px solid burlywood;
+            padding: max(1px, 1.5vw); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: white;
+            color: black; 
+            border-radius: 2px; 
+        }
+
+        .btn-div-td {
+            width: auto; 
+            padding: 3vw; 
+            margin: 3vh; 
         }
 
     </style>
@@ -87,8 +109,8 @@
             // the first thing we do is convert the fulfilled Promise into a JSON, which is much more friendly to work with :) 
               .then(questions => questions.json())
               .then(questions => { 
-                localStorage.setItem('questions', JSON.stringify(questions)); 
-                console.log(questions); 
+                // localStorage.setItem('questions', JSON.stringify(questions)); 
+                // console.log(questions); 
                 let testQuestionDiv = document.getElementById('test-question-div');  
                 // there will always be 5 questions, so we are using a for loop to iterate through the JSON response and create a HTML string that has the
                 // questions and their answers 
@@ -109,7 +131,7 @@
                                 score += 1;
                                 button.style.backgroundColor = 'green';
                                 button.style.color = 'white'; 
-                                alert('correct answer');
+                                // alert('correct answer');
                             });
                         }
                         // otherwise, the answer turns red and you can't click another one
@@ -117,7 +139,7 @@
                             button.addEventListener('click', () => {
                                 button.style.backgroundColor = 'red'
                                 button.style.color = 'white'; 
-                                alert('incorrect answer');
+                                // alert('incorrect answer');
                             }); 
                         }
                         // this event listener makes it so that when you click a button to answer a question, you can't click
@@ -162,9 +184,15 @@
 
         const checkForQuizCompletion = (answered) => {
             let buttonDiv = `<div id="button-div" class="center">
-                                <button class="center" id="save-score" onclick="saveScore()">save score </button>
-                                <button class="center" id="play-again" onclick="playAgain()">play again</button>
-                                <button class="center" id="new-quiz" onclick="newQuiz()">take a different quiz</button>
+                <table id='button-div-table'>
+                    <tbody>
+                        <tr>
+                            <td class='btn-div-td'><button class="center btn-div" id="save-score" onclick="saveScore()">save score </button></td>
+                            <td class='btn-div-td'><button class="center btn-div" id="play-again" onclick="playAgain()">play again</button></td>
+                            <td class='btn-div-td'><button class="center btn-div" id="new-quiz" onclick="newQuiz()">different quiz</button></td>
+                        </tr>
+                    </tbody>
+                </table>
                             </div>`
             if (questionsAnswered === 5) {
                 if (!!document.getElementById('button-div')) {
