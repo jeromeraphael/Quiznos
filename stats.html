@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics</title>
+    <style>
+       * {
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        background-color: rgba(33, 34, 50, 255);
+        color: lightgrey;
+      }
+
+      .center {
+        margin: auto;
+        display: table;
+      }
+
+      td {
+        position: relative;
+        width: 50%;
+      }
+
+      h1 {
+        color: whitesmoke;
+        font-size: 50px;
+        padding-bottom: 1vh; 
+      }
+
+      #header-div {
+          padding-bottom: 2vh; 
+      }
+
+      span {
+          font-size: 20px; 
+          padding: 0.5vw; 
+      }
+
+      button {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        color: whitesmoke;
+        border: none;
+        border-radius: 2px;
+        background-color: rgba(92, 115, 199, 255);
+        transition-duration: 0.2s;
+      }
+
+      button:hover {
+        background-color: lightskyblue
+      }
+
+      text {
+        transform: rotate(90deg);
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        flex-direction: column;
+      }
+
+    </style>
+</head>
+<body>
+    <div class="center" id="header-div">
+        <h1 class="center" id="unique-user-statistics"></h1>
+        <button class="center" id="home" onclick="goHome()">Choose a quiz to play</button>
+    </div>
+    <div id="statistics-div" class="center">
+        <div id="math-average" class="center">
+            <span class="center" id="math-average-span"</span>
+        </div>
+        <div id="science-average" class="center">
+            <span class="center" id="science-average-span"></span>
+        </div>
+        <div id="general-average" class="center">
+            <span class="center" id="general-average-span"></span>
+        </div>
+    </div>
+    <script>
+        var userId = localStorage.getItem('userId');
+        var userName = localStorage.getItem('username'); 
+        document.getElementById('unique-user-statistics').innerHTML  = `${userName}'s Quizknows Statistics`
+
+        fetch(`/stats/${userId}`, {
+                credentials: "same-origin", 
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(response => {
+                document.getElementById('math-average-span').innerHTML = `Your average math score is: ${String(response[2]['AVG(score)']).substring(0, 4)}`
+                document.getElementById('science-average-span').innerHTML = `Your average science score is: ${String(response[1]['AVG(score)']).substring(0, 4)}`
+                document.getElementById('general-average-span').innerHTML = `Your average general score is: ${String(response[0]['AVG(score)']).substring(0, 4)}`
+            });
+
+        const goHome = () => {
+            window.location.href = '/play'; 
+        }
+    </script>
+</body>
+</html>

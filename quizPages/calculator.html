@@ -6,13 +6,61 @@
 <head>
     <meta charset="utf-8">
     <title>TI-Nspire C</title>
-    <script src="calc.js"></script>
-    <link rel="stylesheet" href="calc.css">
+    <style>
+        html {
+            background-color: rgba(33, 34, 50, 255);
+        }
+
+        #calc {
+            width: 360px;
+            background: rgba(92, 115, 199, 255);
+            border: solid;
+            margin: auto;
+            padding: 5px;
+        }
+
+        #display {
+            width: 225px;
+            display: inline-block;
+            text-align: right;
+            font-family: 'Courier New', Courier, monospace;
+            border: solid;
+            margin: 5px;
+            padding: 10px;
+            background: whitesmoke;
+        }
+
+        #C {
+            background: #4ae54a;
+        }
+
+        #equals {
+            background: orange;
+        }
+
+        input {
+            cursor: pointer;
+            width: 65px;
+            height: 65px;
+            padding: 15px;
+            font-size: 20px;
+            margin: 10px;
+            font-family: 'Dosis', sans-serif;
+            border: solid;
+            outline: none;
+            box-shadow: 2px 2px 4px;
+
+        }
+
+        a {
+            color: lightskyblue; 
+        }
+    </style>
 </head>
 
 <body>
     <!-- First div is the "body of the calculator" which is needed for mainly CSS -->
-    <center><p><a href="math.html">HOME</a></p></center>
+    <center><p><a href="/math">HOME</a></p></center>
     <div id="calc">
         <!-- Answer is our display -->
         <div class="row">
@@ -49,7 +97,100 @@
 
 
     </div>
+    <script>
+        let queue = [];
+        let input = 0;
 
+        //First function is to be implemented as it is critical especially for last function for calculator
+        function addToQueue(input) {
+            queue.push(input);
+        }//add to array through the .push() function
+
+        function clearAll() {
+            queue = [];
+            input = 0;
+            document.getElementById("display").innerHTML = "0";
+        }//clear display
+
+        function numericButton(arg) {
+            if (document.getElementById("display").innerHTML === "ERROR" || (document.getElementById("display").innerHTML == "0" && arg != ".")) {
+                document.getElementById("display").innerHTML = "";
+            }
+
+            // Was able to utilize a function for strings called .match(): https://www.w3schools.com/jsref/jsref_match.asp
+            if (!(arg === ".") || !input.match(/[.]/)) {
+                input += arg;
+                document.getElementById("display").innerHTML += arg;
+            }
+
+
+        }
+        function operatorButton(arg) {
+            if (input !== 0 && input !== "-") {
+                input = parseFloat(input);
+                addToQueue(input);
+                addToQueue(arg);
+                document.getElementById("display").innerHTML += arg;
+                input = 0;
+            }
+
+            if (arg == "-" && isNaN(queue[0]) && input !== "-") {
+                input = "-";
+                document.getElementById("display").innerHTML = "-";
+            }
+        }//operators
+
+        function calculateQueue(value) {
+            if (input !== 0) {
+                input = parseFloat(input);
+                addToQueue(input);
+            }
+
+            let answer = value[0];
+            let dividedByZero = 0;
+
+            for (let i = 2; i < value.length; i = i + 2) {
+
+                switch (queue[i - 1]) {
+                    case '+':
+                        answer += value[i];
+                        break;
+                    case '-':
+                        answer -= value[i];
+                        break;
+                    case '/':
+                        if (value[i] === 0) {
+                            dividedByZero = 1;
+                        }
+                        else {
+                            answer = answer / value[i];
+                        }
+
+                        break;
+                    case '*':
+                        answer = answer * value[i];
+                        break;
+                    //no need for defaults
+                }
+
+            }
+            //Limit our answers to 10 decimal places
+            answer = answer.toFixed(10);
+            answer = parseFloat(answer);
+            if (dividedByZero === 1) {
+                clearAll();
+                document.getElementById("display").innerHTML = "NaN";
+            }
+            else {
+                document.getElementById("display").innerHTML = answer;
+                input = answer;
+                queue = [];
+            }
+
+
+        }//calculate
+
+    </script>
 </body>
 
 </html>

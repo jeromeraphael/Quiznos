@@ -18,15 +18,13 @@ const getQuestionSQL = (quizId) => {
   LIMIT 5;`;
 }
 
-// users the mysql connection object, sql statement string, and response object from express
+// users the mysql pool object, sql statement string, and response object from express
 // to send a json of the results of a mysql query 
 const sendQuestionJSON = (pool, sql, res) => {
-   
   pool.query(sql, (err, results) => {
     if (err) throw err; 
     res.json(results); 
-  });
-    
+  });    
 }
 
 var pool = mysql.createPool({
@@ -151,7 +149,6 @@ app.get('/play', (req, res) => {
 })
 
 app.get('/stats/:userId', (req, res) => {
-   
   let sql = `SELECT qs.quizId, AVG(score) from quizAttempts qs 
              INNER JOIN quiz qz ON qz.quizId = qs.quizId
              WHERE userId = ? 
@@ -159,9 +156,12 @@ app.get('/stats/:userId', (req, res) => {
   pool.query(sql, [req.params.userId], (err, results) => {
     if (err) throw err; 
     res.json(results); 
-  });
-   
+  });   
 });
+
+app.get('/statistics', (req, res) => {
+  res.sendFile(__dirname + '/stats.html');
+})
 
 app.get('/calculator', (req, res) => {
   res.sendFile(__dirname + '/quizPages/calculator.html')
@@ -172,4 +172,4 @@ app.get('/calculator', (req, res) => {
 // PW: group4fall2021
 // default schema: cis440fall2021group4
 
-httpServer.listen(4545, () => console.log('listening on port 4545')); 
+httpServer.listen(4545, () => console.log("\x1b[31m%s\x1b[0m", 'listening on port 4545')); 
