@@ -164,7 +164,7 @@
             </linearGradient>
           </defs>
 
-          <circle
+          <circle id="circle"
             r="20"
             cx="21"
             cy="21"
@@ -174,7 +174,7 @@
             stroke-dasharray="126"
             stroke-linecap="round"
           ></circle>
-          <text y="-15px" x="13px" fill="grey">69</text>
+          <text id='circle-text' y="-15px" x="13px" fill="grey">69</text>
         </svg>
         </center>
       </div>
@@ -187,7 +187,7 @@
         var userId = localStorage.getItem('userId');
         var score = 0; 
         var questionsAnswered = 0; 
-
+  
         const loadQuizQuestions = () => {
             // once the start quiz button is clicked, we don't need it anymore so I make it go away forever
             document.getElementById('start-quiz-button').style.display = 'none'; 
