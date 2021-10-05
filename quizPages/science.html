@@ -54,7 +54,7 @@
         border-radius: 3px;
       }
 
-      #start-quiz-button:hover {
+      #start-quiz-button:hover:enabled:enabled {
         background-color: whitesmoke;
         border-color: lightskyblue;
         color: black;
@@ -77,11 +77,11 @@
         transition-duration: 0.2s;
       }
 
-      button:hover {
+      button:hover:enabled {
         background-color: lightskyblue
       }
 
-      .btn-div:hover {
+      .btn-div:hover:enabled {
         background-color: whitesmoke;
         border-color: lightskyblue;
         color: black;
@@ -147,37 +147,6 @@
             <p><a href="/play">HOME</a></p>
           </center>
         </div>
-
-        <!-- CLOCK -->
-        <center>
-        <svg viewBox="0 0 42 42">
-          <defs>
-            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop
-                offset="0%"
-                style="stop-color: rgb(220, 220, 220); stop-opacity: 1"
-              />
-              <stop
-                offset="100%"
-                style="stop-color: rgb(255, 240, 245); stop-opacity: 1"
-              />
-            </linearGradient>
-          </defs>
-
-          <circle id="circle"
-            r="20"
-            cx="21"
-            cy="21"
-            fill="url(#grad1)"
-            stroke="grey"
-            stroke-width="2px"
-            stroke-dasharray="126"
-            stroke-linecap="round"
-          ></circle>
-          <text id='circle-text' y="-15px" x="13px" fill="grey">69</text>
-        </svg>
-        </center>
-      </div>
 
       <!-- QUESTIONS -->
       <button id="start-quiz-button" class='center' onclick="loadQuizQuestions()">start quiz</button>
