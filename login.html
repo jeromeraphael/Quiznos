@@ -6,14 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiznos Login</title>
     <style>
- *{
-            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        body {
+            background: linear-gradient(-45deg, rgba(33,34,50,255), rgba(92,115,199,255));
+            background-size: 400% 400%;
+            animation: gradient 15s ease-in-out infinite;
+            height: 100vh;
         }
 
-        body{
-            /* background-image: url(https://savvyperks.com/wp-content/uploads/2020/09/Quiznos-Featured-Image.png); */
-            background-color: rgba(33,34,50,255)
-        } 
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        *{
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
         
         #submit{
             margin-bottom: 40px;
@@ -189,6 +203,7 @@
                     else {
                         loginDisabled.style.display = '';
                         document.getElementById('submit').disabled = true;
+                        document.getElementById('login-form').remove(); 
                     }  
                 }
                 console.log(JSON.stringify(json)); 
