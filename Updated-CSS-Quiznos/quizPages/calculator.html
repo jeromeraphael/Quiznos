@@ -11,15 +11,20 @@
 
     <style>
         html {
-            background-color: burlywood;
+            background-color: rgba(33, 34, 50, 255);
         }
 
         #calc {
             width: 360px;
-            background: #a4fba6;
-            border: solid;
+            background: grey;
+            border: 2px solid whitesmoke;
             margin: auto;
             padding: 5px;
+        }
+
+        a {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: whitesmoke;
         }
 
         #display {
@@ -30,15 +35,19 @@
             border: solid;
             margin: 5px;
             padding: 10px;
-            background: whitesmoke;
+            color: whitesmoke;
+            background: #545454;
         }
 
-        #C {
-            background: #4ae54a;
+        .operator {
+            background: #4C4C4C;
+            transition-duration: 0.2s;
         }
 
+        #C,
         #equals {
-            background: orange;
+            background: rgba(62, 79, 142, 255);
+            transition-duration: 0.2s;
         }
 
         input {
@@ -49,11 +58,27 @@
             font-size: 20px;
             margin: 10px;
             font-family: 'Dosis', sans-serif;
-            border: solid;
+            border: 3px solid black;
+            border-radius: 4px;
             outline: none;
-            box-shadow: 2px 2px 4px;
-
+            box-shadow: 2px 2px 3px black;
+            background-color: rgba(92, 115, 199, 255);
+            color: whitesmoke;
+            transition-duration: 0.2s;
         }
+
+        #C:hover, #equals:hover {
+            background: rgba(47, 62, 114, 255);
+        }
+
+        input:hover {
+            background: rgba(62, 79, 142, 255);
+        }
+
+        .operator:hover {
+            background: rgba(53, 53, 53, 255);
+        }
+        
     </style>
 </head>
 
@@ -71,27 +96,27 @@
             <input type="button" onclick="numericButton('7')" value="7" />
             <input type="button" onclick="numericButton('8')" value="8" />
             <input type="button" onclick="numericButton('9')" value="9" />
-            <input type="button" onclick="operatorButton('+')" value="+" />
+            <input type="button" class="operator" onclick="operatorButton('+')" value="+" />
         </div>
 
         <div class="row">
             <input type="button" onclick="numericButton('4')" value="4" />
             <input type="button" onclick="numericButton('5')" value="5" />
             <input type="button" onclick="numericButton('6')" value="6" />
-            <input type="button" onclick="operatorButton('-')" value="-" />
+            <input type="button" class="operator" onclick="operatorButton('-')" value="-" />
         </div>
 
         <div class="row">
             <input type="button" onclick="numericButton('1')" value="1" />
             <input type="button" onclick="numericButton('2')" value="2" />
             <input type="button" onclick="numericButton('3')" value="3" />
-            <input type="button" onclick="operatorButton('*')" value="*" />
+            <input type="button" class="operator" onclick="operatorButton('*')" value="*" />
         </div>
 
         <div class="row">
             <input type="button" onclick="numericButton('0')" value="0" />
             <input type="button" onclick="numericButton('.')" value="." />
-            <input type="button" onclick="operatorButton('/')" value="/" />
+            <input type="button" class="operator" onclick="operatorButton('/')" value="/" />
             <input id="equals" type="button" onclick="calculateQueue(queue)" value="=" />
         </div>
 
