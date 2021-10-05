@@ -7,16 +7,21 @@
     <meta charset="utf-8">
     <title>TI-Nspire C</title>
     <style>
-        html {
+html {
             background-color: rgba(33, 34, 50, 255);
         }
 
         #calc {
             width: 360px;
-            background: rgba(92, 115, 199, 255);
-            border: solid;
+            background: grey;
+            border: 2px solid whitesmoke;
             margin: auto;
             padding: 5px;
+        }
+
+        a {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: whitesmoke;
         }
 
         #display {
@@ -27,15 +32,19 @@
             border: solid;
             margin: 5px;
             padding: 10px;
-            background: whitesmoke;
+            color: whitesmoke;
+            background: #545454;
         }
 
-        #C {
-            background: #4ae54a;
+        .operator {
+            background: #4C4C4C;
+            transition-duration: 0.2s;
         }
 
+        #C,
         #equals {
-            background: orange;
+            background: rgba(62, 79, 142, 255);
+            transition-duration: 0.2s;
         }
 
         input {
@@ -46,14 +55,25 @@
             font-size: 20px;
             margin: 10px;
             font-family: 'Dosis', sans-serif;
-            border: solid;
+            border: 3px solid black;
+            border-radius: 4px;
             outline: none;
-            box-shadow: 2px 2px 4px;
-
+            box-shadow: 2px 2px 3px black;
+            background-color: rgba(92, 115, 199, 255);
+            color: whitesmoke;
+            transition-duration: 0.2s;
         }
 
-        a {
-            color: lightskyblue; 
+        #C:hover, #equals:hover {
+            background: rgba(47, 62, 114, 255);
+        }
+
+        input:hover {
+            background: rgba(62, 79, 142, 255);
+        }
+
+        .operator:hover {
+            background: rgba(53, 53, 53, 255);
         }
     </style>
 </head>
