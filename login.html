@@ -92,7 +92,7 @@
         }
 
         #login-form {
-            height: auto; 
+            height: 100px; 
         }
 
         #create-new-account-display {
@@ -118,12 +118,10 @@
 
         <input type="submit" id="submit" value="Login" onclick="validateLogin()">
     </form>
-
-    <!-- <hr> -->
-    <p id="new-to-quizknows">New to Quizknows?</p>
-
     <p id="login-failed">Login attempt <span id="login-failure-number"></span> failed</p>
     <p id="login-disabled">You have tried to log in too many times. Login is now disabled.</p>
+    <!-- <hr> -->
+    <p id="new-to-quizknows">New to Quizknows?</p>
     <br>
     <button id='create-new-account-display' onclick="showCreateAccount()">Create a new account</button>
 
@@ -222,6 +220,10 @@
             if (accountSuccess['accountCreated']) {
                 alert('Gnarly, bro! You have successfully created your QUIZKNOWS account. Use these credentials on your next log in.'); 
             }
+        }
+
+        const accountCreationFailure = () => {
+
         }
 
     </script>
