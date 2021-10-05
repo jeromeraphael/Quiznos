@@ -163,6 +163,9 @@ app.get('/stats/:userId', (req, res) => {
    
 });
 
+app.get('/calculator', (req, res) => {
+  res.sendFile(__dirname + '/quizPages/calculator.html')
+}); 
 // Host: 107.180.1.16
 // Port: 3306
 // Username: 2021group4
