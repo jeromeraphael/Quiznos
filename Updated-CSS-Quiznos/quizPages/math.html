@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <title>The Math Quiz That No One Asked For</title>
+    <script src="script.js"></script>
+
+    <style>
+        * {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            background-color: rgba(33,34,50,255);
+            color: lightgrey;
+        }
+
+        .center {
+            margin: auto;
+            display: table;   
+        }
+
+        .test-question-div {
+            width: auto; 
+        }
+
+        .question-container {
+            width: 80vw; 
+        }
+
+        .explanation {
+            font-style: italic;
+            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            display: none; 
+            word-wrap: break-word; 
+            width: inherit; 
+            text-align: center;
+        }
+
+        .answer {
+            position: relative; 
+            display: table-cell; 
+            width: 100%;
+            height: 100%;  
+        }
+
+        td {
+            position: relative; 
+            width: 50%; 
+        }
+
+        #start-quiz-button{
+            width: 125px;
+            height: 40px;
+            font-size: 1.5em;
+            background-color: rgba(92,115,199,255);
+            border: 2px solid whitesmoke;
+            border-radius: 3px;
+        }
+
+        #start-quiz-button:hover {
+            background-color: whitesmoke;
+            border-color: lightskyblue;  
+            color: black; 
+        }
+
+        .question-text{
+            color: whitesmoke;
+        }
+
+        h1{
+            color: whitesmoke;
+        }
+
+        button {
+            font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: whitesmoke;
+            border: none;
+            border-radius: 2px; 
+            background-color: rgba(92,115,199,255);
+            transition-duration: 0.2s; 
+        }
+
+        button:hover {
+            background-color: lightskyblue
+        }
+
+        .btn-div:hover {
+            background-color: whitesmoke;
+            border-color: lightskyblue;  
+            color: black; 
+        }
+
+        .btn-div {
+            border: 2px solid whitesmoke;
+            padding: max(1px, 1.5vw); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: rgba(92,115,199,255);
+            color: whitesmoke; 
+            border-radius: 2px; 
+        }
+
+        .btn-div-td {
+            width: auto; 
+            padding: 1vw; 
+            margin: 3vh; 
+        }
+
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <div id="homepage">
+        <center><h1>QUIZKNOWS</h1></center>
+        <div id="categories">
+            <center>
+                <p><a href="/play">HOME</a></p>
+                <a id='calc' href="/calculator" target="_blank">I need help.</a>
+                <br>
+            </center>
+        </div>
+        <br>
+        <button id="start-quiz-button" class='center' onclick="loadQuizQuestions()">start quiz</button>
+        <div id="test-question-div" class="center"></div>
+      </div>
+    </main>
+    <script text="text/javascript">
+        var quizId = 3;
+        var userId = localStorage.getItem('userId');
+        var score = 0;
+        var questionsAnswered = 0; 
+
+        const loadQuizQuestions = () => {
+            // once the start quiz button is clicked, we don't need it anymore so I make it go away forever
+            document.getElementById('start-quiz-button').style.display = 'none'; 
+            // fetching data in the standard way
+            fetch('/math/questions', {
+                credentials: "same-origin", 
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            // .then() is what we do with a fetch request in order to use the data that we get because a fetch is what's called a Promise
+            // once the Promise is fulfilled asynchronously, we can do what we want with the data using .then()
+
+            // the first thing we do is convert the fulfilled Promise into a JSON, which is much more friendly to work with :) 
+            .then(questions => questions.json())
+            .then(questions => { 
+                // localStorage.setItem('questions', JSON.stringify(questions)); 
+                // console.log(questions); 
+                let testQuestionDiv = document.getElementById('test-question-div');  
+                // there will always be 5 questions, so we are using a for loop to iterate through the JSON response and create a HTML string that has the
+                // questions and their answers 
+                for (let i = 0; i < 5; i++) { 
+                    let question = questions[i];
+                    let html = convertQuestionToJSON(question, i); 
+                    // inserting the generated div into the question div that is empty when the pages loads using insertAdjacentHTML
+                    testQuestionDiv.insertAdjacentHTML('beforeend', html);
+                    
+                    // adding the right event listeners
+                    let answers = document.getElementsByClassName(`question-${i}`);
+                    for (let j = 0; j < 4; j++) {
+                        let button = testQuestionDiv.lastChild.getElementsByTagName('button')[j];
+                        // if the button's innerHTML, which is the answer text, is the same as the question's correct answer
+                        // the user's score is increased and the button turns green and a nice alert happens
+                        if (button.innerHTML === question['correctAnswer']) {
+                            button.addEventListener('click', () => {
+                                score += 1;
+                                button.style.backgroundColor = 'green';
+                                button.style.color = 'white'; 
+                                // alert('correct answer');
+                            });
+                        }
+                        // otherwise, the answer turns red and you can't click another one
+                        else {
+                            button.addEventListener('click', () => {
+                                button.style.backgroundColor = 'red'
+                                button.style.color = 'white'; 
+                                // alert('incorrect answer');
+                            }); 
+                        }
+                        // this event listener makes it so that when you click a button to answer a question, you can't click
+                        // any of the other answers
+                        button.addEventListener('click', () => {
+                            document.getElementsByClassName(`explanation-${i}`)[0].style.display = 'block'; 
+                            for (let k = 0; k < 4; k++) {
+                                document.getElementsByClassName(`question-${i}`)[k].disabled = true;
+                                questionsAnswered += 0.25;
+                                checkForQuizCompletion(questionsAnswered);   
+                            }
+                        });
+                    }
+                }  
+            });
+        }
+
+        const saveScore = () => {
+            fetch('/save', {
+                credentials: "same-origin", 
+                method: "POST", 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({"quizId": quizId, "userId": userId, "score": score})
+            });
+            document.getElementById('save-score').disabled = true; 
+            document.getElementById('save-score').style.display = 'none'; 
+            document.getElementById('test-question-div').insertAdjacentHTML('beforeend', '<p class="center">Score saved.</p>');  
+        }
+
+        const playAgain = () => {
+            // making save and play again buttons disappear and clearing quiz questions and loading new ones
+            document.getElementById('button-div').style.display = 'none';
+            document.getElementById('test-question-div').innerHTML = ''; 
+            questionsAnswered = 0;
+            score = 0;  
+            loadQuizQuestions();  
+        }
+
+        const newQuiz = () => {
+            window.location.href = '/play';
+        }
+
+        const checkForQuizCompletion = (answered) => {
+            let buttonDiv = `<div id="button-div" class="center">
+                <table id='button-div-table'>
+                    <tbody>
+                        <tr>
+                            <td class='btn-div-td'><button class="center btn-div" id="save-score" onclick="saveScore()">save score </button></td>
+                            <td class='btn-div-td'><button class="center btn-div" id="play-again" onclick="playAgain()">play again</button></td>
+                            <td class='btn-div-td'><button class="center btn-div" id="new-quiz" onclick="newQuiz()">different quiz</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                            </div>`
+            if (questionsAnswered === 5) {
+                if (!!document.getElementById('button-div')) {
+                    document.getElementById('button-div').style.display = ''; 
+                }
+                else {
+                    document.getElementById('test-question-div').insertAdjacentHTML('beforeend', buttonDiv);
+                }
+            }
+        }
+
+        const convertQuestionToJSON = (question, questionNumber) => {
+            // buttons have a class of answer1, answer, and question-# (from 0-4)
+            return `<div id='question-${questionNumber}-container' class='question-container center'>
+                        <span class='question-text center'>${question['questionText']}</span>\
+                        <div class='center explanation explanation-${questionNumber}'>${question['explanations']}</div>
+                            <table class='button-table center'>
+                            <tbody>
+                                <tr>
+                                    <td><button class='answer1 answer question-${questionNumber}'>${question['answer1']}</button></td><td><button class='answer2 answer question-${questionNumber}'>${question['answer2']}</button></td>
+                                </tr>
+                                <tr>
+                                    <td><button class='answer3 answer question-${questionNumber}'>${question['answer3']}</button></td><td><button class='answer4 answer question-${questionNumber}'>${question['answer4']}</button></td>
+                                </tr>
+                            </tbody>
+                            </table>
+                            <br>`; 
+        }
+
+    </script>
+ </body>
+</html>

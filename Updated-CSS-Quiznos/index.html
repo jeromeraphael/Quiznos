@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <title>The Quiz That No One Asked For</title>
+
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
+    <style>
+      body {
+        /* background-image: url(https://cdn1.epicgames.com/ue/product/Screenshot/Image04-1920x1080-99360b49d3fd480eeb9503fa6724d893.png?resize=1&w=1920); */
+        background-color: rgba(33, 34, 50, 255);
+      }
+    
+      h1 {
+        color: burlywood;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+          sans-serif;
+        font-size: 200px;
+      }
+    
+      #categories {
+        color: burlywood;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+          sans-serif;
+        font-size: 75px;
+      }
+    
+    
+      td:hover{
+        color: teal;
+      }
+    
+      td {
+        padding: 2vw;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <div id="homepage">
+        <center><h1>QUIZKNOWS</h1></center>
+        <div id="categories">
+          <center>
+            <table>
+              <tr>
+                <td id="1">GENERAL</td>
+                <td id="2">SCIENCE</td>
+                <td id="3">MATH</td>
+              </tr>
+            </table>
+          </center>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      "use strict";
+      let general = document.getElementById("1");
+      let science = document.getElementById("2");
+      let math = document.getElementById("3");
+
+      const redirectToQuiz = (quizName) => {
+        window.location.href = `http://localhost:4545/${quizName}`
+      }
+
+      general.addEventListener('click', () => {redirectToQuiz('general')});
+      science.addEventListener('click', () => {redirectToQuiz('science')});
+      math.addEventListener('click', () => {redirectToQuiz('math')}); 
+
+      const categoryPick = async() => {
+        let response = await fetch ('/pick', {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify()
+        })
+      };
+
+
+    </script>
+  </body>
+</html>

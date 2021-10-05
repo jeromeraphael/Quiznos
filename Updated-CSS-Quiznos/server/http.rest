@@ -1,0 +1,16 @@
+@hostname = localhost
+@port = 4545
+@contentType = application/json
+
+# GET  http://@{{hostname}}:{{port}}/science/questions HTTP/1.1
+
+GET  http://@{{hostname}}:{{port}}/stats/1 HTTP/1.1
+
+# POST http://@{{hostname}}:{{port}}/save HTTP/1.1
+# Content-Type: {{contentType}}
+
+# {
+#     "quizId": "1", 
+#     "userId": "2", 
+#     "score": "3"
+# }

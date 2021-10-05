@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+        *{
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        body{
+            /* background-image: url(https://savvyperks.com/wp-content/uploads/2020/09/Quiznos-Featured-Image.png); */
+            background-color: rgba(33,34,50,255)
+        } 
+        
+        #submit{
+            margin-bottom: 40px;
+        }
+        
+        #new-to-quizknows{
+            margin-bottom: 0px;
+        }
+
+        #login-div{
+            background-color: whitesmoke;
+            justify-items: center;
+            align-items: center;
+            margin: 0 auto;
+            border-radius: 6px;
+            width: 500px;
+            height: 370px;
+            /*border: 3px solid rgba(33,34,50,255);*/
+        }
+
+        #login-failed, #login-disabled {
+            color: red; 
+        }
+
+        /* p, h3, h5, label{
+            -webkit-text-stroke-width: 1px;
+            -webkit-text-stroke-color: black;
+        } */
+
+        h1{
+            color: whitesmoke;
+        }
+
+        h3{
+            padding-top: 15px;
+        }
+
+        button, #submit, #submit-create-account{
+            color: whitesmoke;
+            background-color: rgba(33,34,50,255);
+            border: none;
+            border-radius: 4px;
+            transition-duration: 0.2s; 
+        }
+        
+        button{
+            height: 30px;
+            width: 140px;
+        }
+
+        #submit, #submit-create-account{
+            height: 25px;
+        }
+
+        button:hover, #submit:hover, #submit-create-account:hover{
+            background-color:rgba(92,115,199,255);
+        }
+
+        div > p, h3, label, h5{
+            color: rgba(33,34,50,255);
+        }
+
+        #submit-create-account{
+            margin-top: 10px;
+        }
+
+        .center{
+            text-align: center;
+        }
+
+    </style>
+</head>
+
+<body class="center">
+    <h1 style="font-family: wingdings; font-size: 50px;">QUIZKNOWS</h1>
+    <div id="login-div">
+    <h3>That's Quizknows in Wingdings</h3>
+
+    <form onsubmit="return false">
+        <label for="username"></label>
+        <input name="username" type="text" id="login-username"  placeholder="USERNAME" required>
+        <br></br>
+
+        <label for="password"></label>
+        <input name="password" type="text" id="login-password" placeholder="PASSWORD" required>
+        <br><br>
+
+        <input type="submit" id="submit" value="Login" onclick="validateLogin()">
+    </form>
+
+    <!-- <hr> -->
+    <p id="new-to-quizknows">New to Quizknows?</p>
+
+    <p id="login-failed">Login attempt <span id="login-failure-number"></span> failed</p>
+    <p id="login-disabled">You have tried to log in too many times. Login is now disabled.</p>
+    <br>
+    <button id='create-new-account-display' onclick="showCreateAccount()">Create a new account</button>
+    <br>
+    <br>
+
+    <form id="create-account" onsubmit="return false">
+        <label for="username">Username: </label>
+        <input id="create-username" name="username" type="text">
+        <label for="password">Password: </label>
+        <input id="create-password" name="password" type="text">
+        <input type="submit" onclick="addAccount()" id="submit-create-account" value="submit">
+    </form>
+
+</div>
+
+    <script>
+        "use strict"; 
+        localStorage.clear(); 
+        let loginAttemptCount = 0; 
+        let createAccount = document.getElementById("create-account");
+        createAccount.style.display = 'none'; 
+        let loginFailed = document.getElementById('login-failed');
+        loginFailed.style.display = 'none'; 
+        let loginDisabled = document.getElementById('login-disabled'); 
+        loginDisabled.style.display = 'none'; 
+
+        
+        const showCreateAccount = () => {
+            document.getElementById("create-account").style.display = 'block'; 
+        }
+
+        const validateLogin = async () =>  {
+            let username = document.getElementById('login-username').value;
+            localStorage.setItem('username', username);  
+            let password = document.getElementById('login-password').value; 
+            let response = await fetch('/validate-login', {
+                method: "POST", 
+                credentials: "same-origin", 
+                headers: {
+                    'Content-Type': 'application/json' 
+                }, 
+                body: JSON.stringify({'username': username, 'password': password})
+            });
+            
+            try {
+                let json = await response.json()
+                if (json['loginValid'] === true ) {
+                    localStorage.setItem('userId', json['userId']);
+                    window.location.href = "http://localhost:4545/play"
+                }
+                else {
+                    if (loginAttemptCount < 10) {
+                        wrongLoginPrompt(json); 
+                    }
+                    else {
+                        loginDisabled.style.display = '';
+                        document.getElementById('submit').disabled = true;
+                    }  
+                }
+                console.log(JSON.stringify(json)); 
+            }
+            catch (e) {
+                console.log(e); 
+                console.locg('going to index.html'); 
+            }
+        }
+
+        const wrongLoginPrompt = (response) => { 
+            loginFailed.style.display = '';
+            loginAttemptCount += 1; 
+            document.getElementById('login-failure-number').innerHTML = loginAttemptCount; 
+        }
+
+        const addAccount = async () => {
+            let newUsername = document.getElementById('create-username').value; 
+            let newPassword = document.getElementById('create-password').value; 
+            let response = await fetch('/create-account', {
+                method: "POST", 
+                credentials: "same-origin", 
+                headers: {
+                    'Content-Type': 'application/json' 
+                }, 
+                body: JSON.stringify({'username': newUsername, 'password': newPassword})
+            });
+            let accountSuccess = await response.json(); 
+            if (accountSuccess['accountCreated']) {
+                alert('Gnarly, bro! You have successfully created your QUIZKNOWS account. Use these credentials on your next log in.'); 
+            }
+        }
+
+    </script>
+</body>
+</html>

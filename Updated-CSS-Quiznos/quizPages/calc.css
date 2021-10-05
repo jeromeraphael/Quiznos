@@ -1,0 +1,48 @@
+/* Jerome Cabacungan, P1, CIS 425, 3 pm */
+/* Used color-hex.com to utilize color palettes for a cleaner look. */
+html
+{
+    background-color: burlywood;
+}
+ #calc
+ {
+  width: 360px;
+  background: #a4fba6;
+  border: solid;
+  margin: auto;
+  padding: 5px;
+}
+
+#display
+{
+  width: 225px;
+  display: inline-block;
+  text-align: right;
+  font-family:'Courier New', Courier, monospace;
+  border: solid;
+  margin: 5px;
+  padding: 10px;
+  background: whitesmoke;
+}
+#C 
+{
+   background: 	#4ae54a;
+}
+#equals
+{
+  background: orange;
+}
+input 
+{
+  cursor: pointer;
+  width: 65px;
+  height: 65px;
+  padding: 15px;
+  font-size: 20px;
+  margin: 10px; 
+  font-family: 'Dosis', sans-serif;
+  border: solid;
+  outline: none;
+  box-shadow: 2px 2px 4px;
+  
+}
